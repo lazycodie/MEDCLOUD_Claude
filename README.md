@@ -51,6 +51,11 @@ All of it is switched off under `prefers-reduced-motion`.
 
 ## Themes
 
-`components/ThemeToggle.tsx` switches between dark (default) and day. The choice is stored in the browser and
+`components/ThemeToggle.tsx` switches between day (default) and dark. The choice is stored in the browser and
 applied before first paint by a small script in `app/layout.tsx`. Colours are tokens in the "v5" block of
 `app/globals.css`; `:root[data-theme="light"]` holds the day palette.
+
+## Palette
+
+Visme "Clean and Modern" (#24): `#17252A` ink, `#2B7A78` teal, `#3AAFA9` aqua, `#DEF2F1` pale aqua, `#FEFFFF` white.
+Tokens live in the "v6" block of `app/globals.css`.

@@ -64,7 +64,10 @@ export default function Orb() {
       scene.add(flight);
       const phys = (color: number, o: Partial<import("three").MeshPhysicalMaterialParameters> = {}) =>
         new THREE.MeshPhysicalMaterial({ color, roughness: 0.22, metalness: 0.05, clearcoat: 1, clearcoatRoughness: 0.15, envMapIntensity: 0.5, ...o });
-      const MINT = 0x2b8f8a, PEACH = 0xdef2f1, WHITE = 0xf4fbfa;
+      const MINT = 0x2b9a94, PEACH = 0xdef2f1, WHITE = 0xf4fbfa;
+      // materials that must contrast with the page: pale on dark, ink on the day theme
+      const contrast: import("three").MeshPhysicalMaterial[] = [];
+      const accent = () => { const m = phys(PEACH); contrast.push(m); return m; };
       const groups = {} as Record<Shape, import("three").Group>;
       SHAPES.forEach((s) => { groups[s] = new THREE.Group(); groups[s].scale.setScalar(0); flight.add(groups[s]); });
 
@@ -87,7 +90,7 @@ export default function Orb() {
         { r: 1.85, tube: 0.005, rx: 1.4, ry: -0.7, sp: -0.18, c: 0x74e2c5, o: 0.6 },
         { r: 2.2, tube: 0.004, rx: 0.5, ry: 1.0, sp: 0.12, c: 0x3aafa9, o: 0.5 },
       ].map((d) => { const m = ring(d.r, d.tube, d.c, d.o); m.rotation.set(d.rx, d.ry, 0); groups.cell.add(m); return { m, sp: d.sp }; });
-      const satMat = [phys(0x74e2c5), phys(PEACH), phys(0xffffff)];
+      const satMat = [phys(0x74e2c5), accent(), phys(0xffffff)];
       const sats = Array.from({ length: 14 }, (_, i) => {
         const m = new THREE.Mesh(new THREE.SphereGeometry(0.035 + Math.random() * 0.085, 20, 20), satMat[i % 3]);
         groups.cell.add(m);
@@ -97,7 +100,7 @@ export default function Orb() {
       /* ---- dna: two strands of beads joined by rungs ---- */
       const helix = new THREE.Group(); groups.dna.add(helix);
       const bead = new THREE.SphereGeometry(0.105, 20, 20), rung = new THREE.CylinderGeometry(0.018, 0.018, 1.1, 8);
-      const mA = phys(0x3aafa9, { emissive: 0x0f4a48, emissiveIntensity: 0.4 }), mB = phys(PEACH), mR = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.45 });
+      const mA = phys(0x3aafa9, { emissive: 0x0f4a48, emissiveIntensity: 0.4 }), mB = accent(), mR = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.45 });
       const N = 24;
       for (let i = 0; i < N; i++) {
         const a = i * 0.52, y = (i - (N - 1) / 2) * 0.155;
@@ -126,7 +129,7 @@ export default function Orb() {
       plus.add(new THREE.Mesh(new RoundedBoxGeometry(2.0, 0.66, 0.5, 6, 0.16), crossM), new THREE.Mesh(new RoundedBoxGeometry(0.66, 2.0, 0.5, 6, 0.16), crossM));
       const cr1 = ring(1.75, 0.006, 0x2b7a78, 0.55); cr1.rotation.x = 1.25; groups.cross.add(cr1);
       const cr2 = ring(2.05, 0.005, 0x3aafa9, 0.5); cr2.rotation.set(0.5, 0.9, 0); groups.cross.add(cr2);
-      const pulse = new THREE.Mesh(new THREE.SphereGeometry(0.08, 16, 16), phys(PEACH)); groups.cross.add(pulse);
+      const pulse = new THREE.Mesh(new THREE.SphereGeometry(0.08, 16, 16), accent()); groups.cross.add(pulse);
 
       /* ---- tube: glass, blood sample, lavender cap, a 30-minute dial ---- */
       const tube = new THREE.Group(); groups.tube.add(tube);
@@ -136,7 +139,7 @@ export default function Orb() {
       tube.rotation.z = -0.5;
       const dial = ring(1.7, 0.008, 0x2b7a78, 0.55); groups.tube.add(dial);
       const hand = new THREE.Group(); groups.tube.add(hand);
-      const tip = new THREE.Mesh(new THREE.SphereGeometry(0.09, 16, 16), phys(PEACH)); tip.position.y = 1.7; hand.add(tip);
+      const tip = new THREE.Mesh(new THREE.SphereGeometry(0.09, 16, 16), accent()); tip.position.y = 1.7; hand.add(tip);
       for (let i = 0; i < 12; i++) { const t = new THREE.Mesh(new THREE.SphereGeometry(0.025, 8, 8), mR); t.position.set(Math.sin(i * 0.5236) * 1.7, Math.cos(i * 0.5236) * 1.7, 0); groups.tube.add(t); }
 
       /* ---- scroll stops ---- */
@@ -187,7 +190,17 @@ export default function Orb() {
       const pos = geo.attributes.position;
       let raf = 0;
 
+      let themed = "";
+      const applyTheme = () => {
+        const th = document.documentElement.dataset.theme === "light" ? "light" : "dark";
+        if (th === themed) return;
+        themed = th;
+        contrast.forEach((m) => m.color.setHex(th === "light" ? 0x17252a : 0xdef2f1));
+        halo.material.opacity = th === "light" ? 0.35 : 1;
+      };
+
       const frame = () => {
+        applyTheme();
         const dt = Math.min(clock.getDelta(), 0.05), t = still ? 0 : clock.elapsedTime;
         const tg = target();
         const k = still ? 1 : 1 - Math.exp(-dt * 3.2);
