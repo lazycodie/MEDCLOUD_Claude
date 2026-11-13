@@ -13,10 +13,17 @@ npm run build   # production build (all routes are static)
 
 | Route | What it is |
 | --- | --- |
-| `/` | Hero search, popular price list, catalogue preview, packages, services, centres, about |
+| `/` | Animated hero search, marquee, department bento, quick-pick tabs, home collection, packages, services, centres, FAQ |
 | `/tests` | Full price list. Accepts `?q=` (search) and `?concern=` (Diabetes, Thyroid, …) |
-| `/tests/[dept]` | One page per department (haematology … radiology), statically generated |
-| `/packages`, `/services`, `/centres`, `/about` | Section pages |
+| `/tests/[dept]` | One page per department |
+| `/tests/[dept]/[test]` | One page per test (362), with price, booking and related tests |
+| `/packages` | Packages plus a comparison table |
+| `/services`, `/services/[slug]` | Services index and four service pages |
+| `/centres`, `/about`, `/contact` | Centres map, about, contact form (hands off to WhatsApp) |
+
+Motion lives in `components/Motion.tsx` (scroll reveal, count-up, cursor spotlight, typed placeholder),
+`app/template.tsx` (route transition) and the "v2" block at the end of `app/globals.css`.
+All of it is switched off under `prefers-reduced-motion`.
 
 ## Structure
 
@@ -27,11 +34,13 @@ npm run build   # production build (all routes are static)
   sent as a prefilled WhatsApp message to the lab's number. Replace `review()`/the done view with an API
   route when a booking backend exists.
 - `components/Catalogue.tsx`, `HeroSearch.tsx`, `Centres.tsx` — interactive pieces.
-- `components/Sections.tsx`, `Chrome.tsx` — server-rendered sections, header and footer.
+- `components/Header.tsx` — sticky header with mega-menu and mobile menu.
+- `components/Sections.tsx`, `HomeSections.tsx`, `Chrome.tsx` — page sections and footer.
 - `app/globals.css` — design tokens (`:root`) and all styles.
 
 ## Before going live
 
 - Package prices are not published on the current site (only "starting @ INR 999*").
-- Concern groupings, tube-colour labels and the map positions are design additions, not lab data.
+- Concern groupings, tube-colour labels, FAQ wording, per-test booking notes and the map positions are
+  design additions written from the site's facts, not lab-supplied data.
 - No testimonials: the ones on the current site are placeholder text.

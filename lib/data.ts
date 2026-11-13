@@ -39,7 +39,7 @@ const ACR = new Set(
 );
 /** The source site title-cases everything ("Ct Brain"); restore medical acronyms. */
 const pretty = (s: string) =>
-  s.replace(/[A-Za-z0-9]+/g, (w) => (ACR.has(w.toLowerCase()) ? w.toUpperCase() : w)).replace(/\s+/g, " ").trim();
+  s.replace(/[A-Za-z0-9]+/g, (w) => (ACR.has(w.toLowerCase()) ? w.toUpperCase() : w)).replace(/hba1c/gi, "HbA1c").replace(/\s+/g, " ").trim();
 
 function modality(n: string): Modality {
   n = n.toLowerCase();
@@ -139,3 +139,93 @@ export function searchTests(query: string, pool: Item[] = TESTS): Item[] {
     .sort((a, b) => a.s - b.s)
     .map((x) => x.t);
 }
+
+/* ---------- lookups ---------- */
+export const testHref = (t: Item) => `/tests/${t.id}`;
+export const deptTests = (d: Dept) => TESTS.filter((t) => t.dept === d);
+export const deptFrom = (d: Dept) => Math.min(...deptTests(d).map((t) => t.price!));
+export function relatedTests(t: Item, n = 6): Item[] {
+  const first = t.key.split(/[^a-z0-9]+/).filter((w) => w.length > 2)[0];
+  const same = TESTS.filter((x) => x.dept === t.dept && x.id !== t.id);
+  const score = (x: Item) => (first && x.key.includes(first) ? 0 : 1) + (x.mod === t.mod ? 0 : 1);
+  return [...same].sort((a, b) => score(a) - score(b) || Math.abs(a.price! - t.price!) - Math.abs(b.price! - t.price!)).slice(0, n);
+}
+
+/* ---------- services (copy from medcloudlabs.com) ---------- */
+export type Service = {
+  slug: string; name: string; short: string; intro: string[]; pills: string[];
+  parts: { title: string; body: string }[]; dept?: Dept; cta: string;
+};
+export const SERVICES: Service[] = [
+  {
+    slug: "home-collection", name: "Home sample collection", cta: "Request home collection",
+    short: "Call us and we collect your sample at home in 30 minutes.",
+    intro: ["Home collection in 30 minutes. Call us now, or send your test list on WhatsApp, and skip the trip to the centre."],
+    pills: ["30-minute pickup", "Blood & urine samples", "Call or WhatsApp"],
+    parts: [
+      { title: "Tell us the tests", body: "Add tests from the price list or read out your prescription on a call to +91 81508 15026." },
+      { title: "We come to you", body: "Share your address and a time of day. Our team calls back to confirm the pickup." },
+      { title: "Sample goes to the lab", body: "Your sample is processed at a Medcloud lab with the same equipment and quality control as a centre visit." },
+    ],
+  },
+  {
+    slug: "diagnostic", name: "Diagnostic lab", dept: "haematology", cta: "Book a lab test",
+    short: "Routine blood counts to cancer markers and hormone assays, with stringent quality control.",
+    intro: [
+      "At Medcloud we take pride in delivering high-quality services focused on preventing and accurately detecting diseases. Our commitment to excellence is reflected in the utilization of cutting-edge technology, advanced equipment, and stringent quality control measures.",
+      "Within our facilities, patients have access to a comprehensive range of services, spanning from routine Complete Blood Count (CBP) and Blood Glucose tests to specialized examinations for infectious diseases, cancer markers, hormonal assays, and more.",
+    ],
+    pills: ["Haematology", "Biochemistry", "Serology", "Microbiology", "Histopathology"],
+    parts: [
+      { title: "Platelet count", body: "Platelet count is a crucial component of a complete blood count (CBC) test, measuring the number of platelets in a small sample of blood. Abnormal platelet counts can indicate potential bleeding or clotting disorders, making it a valuable diagnostic tool in assessing overall health." },
+      { title: "Blood test", body: "A blood test analyzes a sample of blood to assess various aspects of health, including red and white blood cell counts, platelet levels, and biochemical markers. Blood tests are essential for detecting and monitoring medical conditions." },
+      { title: "Urine test", body: "A urine test analyzes a sample of urine to assess the health of the urinary system and overall well-being. It detects substances like proteins, glucose, and red or white blood cells, providing insights into kidney function, diabetes, and potential infections." },
+    ],
+  },
+  {
+    slug: "imaging-centres", name: "Imaging centres", dept: "radiology", cta: "Book a scan",
+    short: "3T MRI, MDCT and ultrasound, read by highly qualified and experienced radiologists.",
+    intro: [
+      "Dependable radiology services are crucial for ensuring precise diagnoses. With our facility, you can trust in the utilization of state-of-the-art technology, including 3T MRI, ultrasound, and MDCT, coupled with oversight from a team of highly qualified and experienced Radiologists.",
+      "This combination guarantees not only accurate results but also clinical relevance in the interpretations you receive. Medcloud runs the first fetal imaging center in Mandya to conduct fetal interventions.",
+    ],
+    pills: ["3T MRI", "CT scan", "Ultrasound", "X-Ray", "Fetal imaging"],
+    parts: [
+      { title: "CT scan", body: "Our CT scan services utilize cutting-edge technology to produce detailed cross-sectional images of the body, aiding in the accurate diagnosis of various medical conditions. Swift and precise imaging lets our experienced radiologists provide valuable insights into your health." },
+      { title: "X-Ray", body: "Our advanced imaging technology captures detailed images of internal structures, aiding in the prompt detection and evaluation of various health conditions. Led by skilled radiologists, our X-ray services provide a foundation for precise medical assessments." },
+      { title: "Ultrasound", body: "Utilizing high-frequency sound waves, we create detailed images of internal structures, offering valuable insights for diagnostic purposes. Ultrasound is a reliable and non-invasive tool for assessing various medical conditions." },
+    ],
+  },
+  {
+    slug: "specialist-consultation", name: "Specialist consultation", cta: "Book a consultation",
+    short: "Visiting specialists in ultrasound, radiology and fetal intervention.",
+    intro: [
+      "Our Specialist Consultation services bring together a team of expert professionals dedicated to providing specialized care in ultrasounds, radiology, fetal intervention, and various other visiting specialties.",
+      "Our visiting specialists are leaders in their respective fields, equipped with extensive experience and a commitment to delivering precise and compassionate care.",
+    ],
+    pills: ["Radiology", "Ultrasound", "Fetal intervention", "Visiting specialties"],
+    parts: [
+      { title: "Comprehensive diagnostics", body: "Whether you require detailed imaging through ultrasounds or radiology services, or you’re seeking fetal intervention expertise, we have you covered." },
+      { title: "Insights that matter", body: "We understand the importance of accurate diagnostics in your healthcare journey, and our team is dedicated to providing insights that matter." },
+      { title: "A reassuring visit", body: "From advanced equipment to a patient-centric approach, we strive to create an environment where you feel confident in the expertise of our specialists." },
+    ],
+  },
+];
+
+export const WHY = [
+  { title: "High quality lab", body: "Cutting-edge technology, advanced equipment and stringent quality control measures." },
+  { title: "Unmatched expertise", body: "A trusted choice among physicians, with 350+ referring doctors and 50+ network hospitals." },
+  { title: "Precise result", body: "Accurate results with clinical relevance in the interpretations you receive." },
+  { title: "Qualified staff", body: "20 expert staff, led by a radiologist and a pathologist." },
+];
+
+export const FAQS = [
+  { q: "How do I book a test?", a: "Add tests from the price list to “My tests”, fill in your name and number, and send the request on WhatsApp. You can also call +91 81508 15026 and read out your prescription. Our team calls back to confirm." },
+  { q: "Do you collect samples at home?", a: "Yes. Call us for home collection in 30 minutes. Scans such as CT, MRI, ultrasound and X-ray are done at our centres." },
+  { q: "How much do tests cost?", a: "Every test and scan is listed with its price on this site. Annual health packages start at ₹999*; call us for the current price of each package." },
+  { q: "Where are your centres?", a: "Medcloud has four healthcare centres: Mandya, Malavalli, Kunigal and Ramanagara. Each centre page has the address and directions." },
+  { q: "Which scans do you offer?", a: "CT (MDCT), 3T MRI, ultrasound, X-ray, mammography, ECG and echo. Medcloud also runs the first fetal imaging center in Mandya to conduct fetal interventions." },
+  { q: "Can I see a specialist at Medcloud?", a: "Yes. Visiting specialists in ultrasound, radiology and fetal intervention consult at our centres. Call to book a consultation." },
+];
+
+export const MARQUEE = ["3T MRI", "MDCT", "Ultrasound", "Fetal imaging", "Haematology", "Biochemistry", "Serology", "Hormone assays", "Histopathology", "Microbiology", "Cytology", "Clinical pathology", "Home collection in 30 minutes"];

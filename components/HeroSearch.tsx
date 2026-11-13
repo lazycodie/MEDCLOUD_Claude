@@ -1,9 +1,13 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { DEPT_NAME, PHONE_DISPLAY, TEL, TESTS, rupee, searchTests } from "@/lib/data";
+import { DEPT_NAME, PHONE_DISPLAY, TEL, TESTS, rupee, searchTests, testHref } from "@/lib/data";
 import { AddButton } from "./Buttons";
+import { useTyped } from "./Motion";
+
+const EXAMPLES = ["CBC", "thyroid profile", "CT brain", "vitamin D", "HbA1c", "TIFFA scan", "lipid profile"];
 
 /** Hero typeahead: live prices as you type, Enter goes to the full results on /tests. */
 export default function HeroSearch() {
@@ -12,6 +16,7 @@ export default function HeroSearch() {
   const [open, setOpen] = useState(false);
   const box = useRef<HTMLDivElement>(null);
   const results = searchTests(q);
+  const typed = useTyped(EXAMPLES);
 
   useEffect(() => {
     const away = (e: MouseEvent) => { if (!box.current?.contains(e.target as Node)) setOpen(false); };
@@ -27,7 +32,7 @@ export default function HeroSearch() {
       <label className="sr" htmlFor="q">Search tests and scans</label>
       <div className="search-box">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="M20 20l-3.5-3.5" /></svg>
-        <input id="q" type="search" autoComplete="off" placeholder={`Search ${TESTS.length} tests — try “CBC”, “thyroid”, “CT brain”`} aria-controls="suggest" aria-expanded={show}
+        <input id="q" type="search" autoComplete="off" placeholder={`Search ${TESTS.length} tests — try “${typed}”`} aria-controls="suggest" aria-expanded={show}
           value={q} onChange={(e) => { setQ(e.target.value); setOpen(true); }} onFocus={() => setOpen(true)}
           onKeyDown={(e) => { if (e.key === "Enter") go(); if (e.key === "Escape") setOpen(false); }} />
         <button className="btn btn-primary" onClick={go}>Search</button>
@@ -36,7 +41,7 @@ export default function HeroSearch() {
         <ul className="suggest" id="suggest">
           {results.slice(0, 6).map((t) => (
             <li key={t.id}>
-              <div className="nm">{t.name}<small>{t.dept !== "package" && DEPT_NAME[t.dept]}</small></div>
+              <div className="nm"><Link href={testHref(t)}>{t.name}</Link><small>{t.dept !== "package" && DEPT_NAME[t.dept]}</small></div>
               <span className="price">{rupee(t.price!)}</span>
               <AddButton id={t.id} />
             </li>

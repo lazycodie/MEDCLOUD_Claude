@@ -37,3 +37,9 @@ export function SlipButton({ className = "btn btn-ghost btn-sm slip-btn" }: { cl
     </button>
   );
 }
+
+/** Adds the test (if it is not in the list yet) and opens the booking form. */
+export function BookTestButton({ id, children, className = "btn btn-primary" }: { id: string; children: React.ReactNode; className?: string }) {
+  const { has, toggle, open } = useSlip();
+  return <button className={className} onClick={() => { if (!has(id)) toggle(id); open("book", ITEMS[id].dept === "radiology" ? { mode: "centre" } : {}); }}>{children}</button>;
+}

@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { CONCERNS, DEPTS, DEPT_NAME, MODALITIES, TESTS, rupee, searchTests, type Dept, type Modality } from "@/lib/data";
+import { CONCERNS, DEPTS, DEPT_NAME, MODALITIES, TESTS, rupee, searchTests, testHref, type Dept, type Modality } from "@/lib/data";
 import { AddButton } from "./Buttons";
 
 type Sort = "az" | "lo" | "hi";
@@ -62,7 +62,7 @@ export default function Catalogue({ dept = "all", pageSize = 12 }: { dept?: Dept
         <ul className="list" aria-live="polite">
           {shown.length ? shown.map((t) => (
             <li key={t.id}>
-              <div className="nm"><b>{t.name}</b><small>{t.dept !== "package" && DEPT_NAME[t.dept]}{t.mod && t.mod !== "Other" ? ` · ${t.mod}` : ""}</small></div>
+              <div className="nm"><Link href={testHref(t)}><b>{t.name}</b></Link><small>{t.dept !== "package" && DEPT_NAME[t.dept]}{t.mod && t.mod !== "Other" ? ` · ${t.mod}` : ""}</small></div>
               <span className="price">{rupee(t.price!)}</span>
               <AddButton id={t.id} />
             </li>
