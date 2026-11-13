@@ -55,7 +55,7 @@ export default function Orb() {
       scene.add(flight);
 
       // core: a sphere whose surface slowly ripples
-      const geo = new THREE.SphereGeometry(1, 96, 96);
+      const geo = new THREE.SphereGeometry(1, 64, 64);
       const base = (geo.attributes.position.array as Float32Array).slice();
       const core = new THREE.Mesh(geo, new THREE.MeshPhysicalMaterial({
         color: 0x1b8f7c, roughness: 0.2, metalness: 0.05, clearcoat: 1, clearcoatRoughness: 0.12,

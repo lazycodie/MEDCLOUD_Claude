@@ -10,12 +10,12 @@ export function Splash() {
     let seen = false;
     try { seen = sessionStorage.getItem("mc-splash") === "1"; sessionStorage.setItem("mc-splash", "1"); } catch {}
     if (seen || matchMedia("(prefers-reduced-motion: reduce)").matches) { setState("gone"); return; }
-    let i = 0;
-    const id = setInterval(() => {
-      i += 2; setN(Math.min(100, i));
-      if (i >= 100) { clearInterval(id); setTimeout(() => setState("out"), 200); setTimeout(() => setState("gone"), 900); }
-    }, 28);
-    return () => clearInterval(id);
+    // Driven by the clock, not by tick count, so a busy main thread cannot stretch it.
+    const t0 = performance.now(), DUR = 1400;
+    const id = setInterval(() => setN(Math.min(100, Math.round(((performance.now() - t0) / DUR) * 100))), 30);
+    const out = setTimeout(() => { clearInterval(id); setN(100); setState("out"); }, DUR + 150);
+    const gone = setTimeout(() => setState("gone"), DUR + 900);
+    return () => { clearInterval(id); clearTimeout(out); clearTimeout(gone); };
   }, []);
   if (state === "gone") return null;
   return <div className={`splash ${state === "out" ? "out" : ""}`} aria-hidden="true"><span>{n}</span></div>;
