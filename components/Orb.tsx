@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 
 type Key = { x: number; y: number; s: number; el: HTMLElement };
 const ease = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
@@ -14,8 +15,13 @@ const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
  */
 export default function Orb() {
   const ref = useRef<HTMLCanvasElement>(null);
+  // Rendered into <body>: an animated ancestor (the route transition) would otherwise
+  // become the containing block and stretch this fixed canvas to the full page height.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
   useEffect(() => {
+    if (!mounted) return;
     let dead = false;
     let cleanup = () => {};
     (async () => {
@@ -34,15 +40,15 @@ export default function Orb() {
       renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
       renderer.outputColorSpace = THREE.SRGBColorSpace;
       renderer.toneMapping = THREE.ACESFilmicToneMapping;
-      renderer.toneMappingExposure = 1.1;
+      renderer.toneMappingExposure = 0.82;
 
       const scene = new THREE.Scene();
       const pmrem = new THREE.PMREMGenerator(renderer);
       scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
       const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 100);
       camera.position.set(0, 0, 10);
-      scene.add(new THREE.HemisphereLight(0xe8fff8, 0x0b2a4a, 1.2));
-      const warm = new THREE.DirectionalLight(0xffe2ad, 2.4); warm.position.set(3, 5, 6); scene.add(warm);
+      scene.add(new THREE.HemisphereLight(0xc8fff0, 0x061a33, 0.7));
+      const warm = new THREE.DirectionalLight(0xffe2ad, 1.6); warm.position.set(3, 5, 6); scene.add(warm);
       const cool = new THREE.DirectionalLight(0x7fd8ff, 2); cool.position.set(-5, 1, -3); scene.add(cool);
 
       const flight = new THREE.Group();
@@ -52,9 +58,9 @@ export default function Orb() {
       const geo = new THREE.SphereGeometry(1, 96, 96);
       const base = (geo.attributes.position.array as Float32Array).slice();
       const core = new THREE.Mesh(geo, new THREE.MeshPhysicalMaterial({
-        color: 0x74e2c5, roughness: 0.16, metalness: 0.05, clearcoat: 1, clearcoatRoughness: 0.12,
-        iridescence: 1, iridescenceIOR: 1.45, sheen: 1, sheenColor: new THREE.Color(0xc8fff0),
-        emissive: 0x0c5a52, emissiveIntensity: 0.4, envMapIntensity: 1.15,
+        color: 0x1b8f7c, roughness: 0.2, metalness: 0.05, clearcoat: 1, clearcoatRoughness: 0.12,
+        iridescence: 0.55, iridescenceIOR: 1.45, sheen: 0.2, sheenColor: new THREE.Color(0x7fe6cc),
+        emissive: 0x06403c, emissiveIntensity: 0.3, envMapIntensity: 0.4,
       }));
       flight.add(core);
 
@@ -62,7 +68,7 @@ export default function Orb() {
       const hc = document.createElement("canvas"); hc.width = hc.height = 256;
       const hx = hc.getContext("2d")!;
       const hg = hx.createRadialGradient(128, 128, 0, 128, 128, 128);
-      hg.addColorStop(0, "rgba(120,235,205,.55)"); hg.addColorStop(0.45, "rgba(80,190,200,.18)"); hg.addColorStop(1, "rgba(0,0,0,0)");
+      hg.addColorStop(0, "rgba(99,216,187,.38)"); hg.addColorStop(0.45, "rgba(60,170,180,.12)"); hg.addColorStop(1, "rgba(0,0,0,0)");
       hx.fillStyle = hg; hx.fillRect(0, 0, 256, 256);
       const halo = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(hc), transparent: true, depthWrite: false, blending: THREE.AdditiveBlending }));
       halo.scale.setScalar(5.6); halo.position.z = -1; flight.add(halo);
@@ -175,7 +181,7 @@ export default function Orb() {
       if (dead) cleanup();
     })();
     return () => { dead = true; cleanup(); };
-  }, []);
+  }, [mounted]);
 
-  return <canvas ref={ref} className="orb" aria-hidden="true" />;
+  return mounted ? createPortal(<canvas ref={ref} className="orb" aria-hidden="true" />, document.body) : null;
 }

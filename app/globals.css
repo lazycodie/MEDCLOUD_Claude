@@ -1044,3 +1044,10 @@ section.block{padding-block:110px}
 .stat b{background:none;color:#fff;-webkit-text-fill-color:#fff}
 .srow-main b,.firsts p,.story-lead{letter-spacing:-.035em}
 .mission-text{background:none;color:#fff;-webkit-text-fill-color:#fff}
+.hero4-main{min-width:0}
+.scroll-hint{display:none}
+@media (max-width:900px){.hero4{padding-bottom:96px}.hero4-bottom{grid-template-columns:minmax(0,1fr)}.hero4 .hero-cta .btn{flex:1 1 auto}}
+.story{overflow-x:clip}
+.hero4 h1{text-shadow:0 4px 40px rgba(7,21,43,.6)}
+.hero4 h1 em{text-shadow:none}
+.hero4 h1{text-shadow:none}

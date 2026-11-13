@@ -24,7 +24,7 @@ export default function Home() {
     <>
       <Orb />
 
-      <section className="hero4" data-orb="0.3,0.04,1">
+      <section className="hero4" data-orb="0.36,0.02,0.92">
         <div className="hero4-top">
           <p className="kicker">Welcome to Medcloud <i>／</i> Diagnostics</p>
           <div className="hstat right"><span className="hstat-line" /><b><CountUp value="350+" /></b><small>referring doctors</small></div>

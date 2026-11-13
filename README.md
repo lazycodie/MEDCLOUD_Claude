@@ -21,7 +21,11 @@ npm run build   # production build (all routes are static)
 | `/services`, `/services/[slug]` | Services index and four service pages |
 | `/centres`, `/about`, `/contact` | Centres map, about, contact form (hands off to WhatsApp) |
 
-Motion lives in `components/Motion.tsx` (scroll reveal, count-up, cursor spotlight, typed placeholder),
+The home page is a scroll story: `components/Orb.tsx` (three.js object that flies between sections marked
+`data-orb`), `components/Cinema.tsx` (splash counter and the masked-card mosaic) and `public/field.jpg`
+(the mosaic's shared image, generated art).
+
+Other motion lives in `components/Motion.tsx` (scroll reveal, count-up, cursor spotlight, typed placeholder),
 `app/template.tsx` (route transition) and the "v2" block at the end of `app/globals.css`.
 All of it is switched off under `prefers-reduced-motion`.
 
