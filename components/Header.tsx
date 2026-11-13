@@ -6,6 +6,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { DEPTS, PHONE_DISPLAY, SERVICES, TEL, TESTS, WHATSAPP, deptFrom, rupee } from "@/lib/data";
 import { BookButton, SlipButton } from "./Buttons";
+import ThemeToggle from "./ThemeToggle";
 
 type Menu = "tests" | "services" | null;
 const LINKS: { href: string; label: string; menu?: Exclude<Menu, null> }[] = [
@@ -43,7 +44,7 @@ export default function Header() {
     <>
       <header className={`site ${scrolled ? "scrolled" : ""}`} onMouseLeave={() => setMenu(null)}>
         <div className="wrap">
-          <Link className="logo" href="/" aria-label="Medcloud home"><Image src="/logo-light.png" alt="Medcloud" width={172} height={100} priority /></Link>
+          <Link className="logo" href="/" aria-label="Medcloud home"><Image className="logo-on-dark" src="/logo-light.png" alt="Medcloud" width={172} height={100} priority /><Image className="logo-on-light" src="/logo.png" alt="" width={172} height={100} priority /></Link>
           <nav className="main" aria-label="Main">
             {LINKS.map((l) => l.menu ? (
               <div key={l.href} className="nav-item" onMouseEnter={() => setMenu(l.menu!)}>
@@ -55,6 +56,7 @@ export default function Header() {
             ))}
           </nav>
           <div className="head-actions">
+            <ThemeToggle />
             <SlipButton />
             <BookButton className="btn btn-primary btn-sm book-top">Book a test</BookButton>
             <button className="burger" aria-label={mobile ? "Close menu" : "Open menu"} aria-expanded={mobile} onClick={() => setMobile(!mobile)}>

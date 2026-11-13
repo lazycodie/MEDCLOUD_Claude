@@ -25,7 +25,7 @@ export default async function ServicePage({ params }: Props) {
   const others = SERVICES.filter((x) => x.slug !== s.slug);
   return (
     <>
-      <PageHead eyebrow="Service" title={s.name} lede={s.short} crumbs={[{ href: "/services", label: "Services" }]}>
+      <PageHead shape={({ diagnostic: "dna", "imaging-centres": "scanner", "specialist-consultation": "cross", "home-collection": "tube" } as const)[s.slug as "diagnostic"]} eyebrow="Service" title={s.name} lede={s.short} crumbs={[{ href: "/services", label: "Services" }]}>
         <div className="head-acts">
           <BookButton className="btn btn-amber" preset={{ mode: s.slug === "home-collection" ? "home" : s.dept === "radiology" ? "centre" : undefined }}>{s.cta}</BookButton>
           <a className="btn btn-onnavy" href={TEL}>Call {PHONE_DISPLAY}</a>

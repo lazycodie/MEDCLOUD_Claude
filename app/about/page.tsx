@@ -13,7 +13,7 @@ const FIRSTS = [
 export default function AboutPage() {
   return (
     <>
-      <PageHead eyebrow="About Medcloud" title="Advanced diagnostics, closer to home" lede="Medcloud is a leading Healthcare service provider in India, specializing in advanced radiology and pathology solutions equipped with state of the art facilities." />
+      <PageHead shape="cell" eyebrow="About Medcloud" title="Advanced diagnostics, closer to home" lede="Medcloud is a leading Healthcare service provider in India, specializing in advanced radiology and pathology solutions equipped with state of the art facilities." />
       <Stats />
 
       <section className="block"><div className="wrap story">

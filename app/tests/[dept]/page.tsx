@@ -23,7 +23,7 @@ export default async function DeptPage({ params }: Props) {
   const count = TESTS.filter((t) => t.dept === d.slug).length;
   return (
     <>
-      <PageHead eyebrow={`${count} tests`} title={d.name} lede={d.blurb} crumbs={[{ href: "/tests", label: "Tests & prices" }]} />
+      <PageHead shape={d.slug === "radiology" ? "scanner" : "dna"} eyebrow={`${count} tests`} title={d.name} lede={d.blurb} crumbs={[{ href: "/tests", label: "Tests & prices" }]} />
       <section className="block"><div className="wrap"><Suspense><Catalogue dept={d.slug} pageSize={25} /></Suspense></div></section>
       <Cta />
     </>

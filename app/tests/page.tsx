@@ -9,7 +9,7 @@ export const metadata: Metadata = { title: "Tests & prices", description: `Price
 export default function TestsPage() {
   return (
     <>
-      <PageHead eyebrow="Tests & prices" title="Every test, with its price" lede={`All ${TESTS.length} tests and scans Medcloud offers. Add what your doctor prescribed and send us the list.`} />
+      <PageHead shape="dna" eyebrow="Tests & prices" title="Every test, with its price" lede={`All ${TESTS.length} tests and scans Medcloud offers. Add what your doctor prescribed and send us the list.`} />
       <section className="block"><div className="wrap"><Suspense><Catalogue pageSize={25} /></Suspense></div></section>
       <Cta />
     </>

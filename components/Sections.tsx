@@ -3,10 +3,11 @@ import Link from "next/link";
 import { CENTRES, DEPT_NAME, PACKS, PHONE_DISPLAY, POPULAR, SERVICES, TEL, TUBES, WHATSAPP, WHY, rupee, testHref, type Tube } from "@/lib/data";
 import { AddButton, AddPackageButton, BookButton } from "./Buttons";
 import { CountUp, Reveal } from "./Motion";
+import Orb, { type Shape } from "./Orb";
 
-export function PageHead({ eyebrow, title, lede, crumbs, children }: { eyebrow: string; title: string; lede?: string; crumbs?: { href: string; label: string }[]; children?: React.ReactNode }) {
+export function PageHead({ eyebrow, title, lede, crumbs, children, shape }: { eyebrow: string; title: string; lede?: string; crumbs?: { href: string; label: string }[]; children?: React.ReactNode; shape?: Shape }) {
   return (
-    <section className="page-head"><div className="wrap">
+    <section className={`page-head ${shape ? "has-3d" : ""}`} data-orb={shape ? "0.56,0.02,0.62" : undefined} data-shape={shape}>{shape && <Orb />}<div className="wrap">
       {crumbs && <p className="crumbs"><Link href="/">Home</Link>{crumbs.map((c) => <span key={c.href}> / <Link href={c.href}>{c.label}</Link></span>)}</p>}
       <p className="eyebrow">{eyebrow}</p>
       <h1>{title}</h1>

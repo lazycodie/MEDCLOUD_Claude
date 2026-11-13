@@ -11,10 +11,10 @@ import { DEPTS, PHONE_DISPLAY, SERVICES, TEL, TESTS, deptFrom, deptTests, rupee 
 
 // where the 3D cell sits in each full-screen section: "x,y,scale" in viewport units
 const STORY = [
-  { slug: "diagnostic", orb: "-0.42,0.02,0.95", side: "right", title: <>The lab behind<br />the <em>answer.</em></> },
-  { slug: "imaging-centres", orb: "0.42,-0.04,1.05", side: "left", title: <>See what is<br /><em>beneath.</em></> },
-  { slug: "specialist-consultation", orb: "-0.4,0.06,0.85", side: "right", title: <>A specialist,<br />in the <em>same visit.</em></> },
-  { slug: "home-collection", orb: "0.4,0,1.1", side: "left", title: <>We come to you<br />in <em>30 minutes.</em></> },
+  { slug: "diagnostic", shape: "dna", orb: "-0.42,0.02,0.95", side: "right", title: <>The lab behind<br />the <em>answer.</em></> },
+  { slug: "imaging-centres", shape: "scanner", orb: "0.42,-0.04,1.05", side: "left", title: <>See what is<br /><em>beneath.</em></> },
+  { slug: "specialist-consultation", shape: "cross", orb: "-0.4,0.06,0.85", side: "right", title: <>A specialist,<br />in the <em>same visit.</em></> },
+  { slug: "home-collection", shape: "tube", orb: "0.4,0,1.1", side: "left", title: <>We come to you<br />in <em>30 minutes.</em></> },
 ] as const;
 
 const TOP_DEPTS = ["radiology", "biochemistry", "haematology", "serology", "hormone-assays"] as const;
@@ -24,7 +24,7 @@ export default function Home() {
     <>
       <Orb />
 
-      <section className="hero4" data-orb="0.36,0.02,0.92">
+      <section className="hero4" data-orb="0.36,0.02,0.92" data-shape="cell">
         <div className="hero4-top">
           <p className="kicker">Welcome to Medcloud <i>／</i> Diagnostics</p>
           <div className="hstat right"><span className="hstat-line" /><b><CountUp value="350+" /></b><small>referring doctors</small></div>
@@ -56,7 +56,7 @@ export default function Home() {
       {STORY.map((st, i) => {
         const s = SERVICES.find((x) => x.slug === st.slug)!;
         return (
-          <section key={s.slug} className={`story ${st.side}`} data-orb={st.orb}>
+          <section key={s.slug} className={`story ${st.side}`} data-orb={st.orb} data-shape={st.shape}>
             <div className="wrap">
               <Reveal kind={st.side === "right" ? "left" : "right"} className="story-text">
                 <span className="story-n">{String(i + 1).padStart(2, "0")}</span>

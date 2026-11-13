@@ -17,7 +17,7 @@ export default function PackagesPage() {
   }));
   return (
     <>
-      <PageHead eyebrow="Health packages" title="Checkups, bundled" lede="Annual health packages start at ₹999*. Call +91 81508 15026 for the current price of each package." />
+      <PageHead shape="tube" eyebrow="Health packages" title="Checkups, bundled" lede="Annual health packages start at ₹999*. Call +91 81508 15026 for the current price of each package." />
       <section className="block"><div className="wrap"><PackageGrid /></div></section>
       <section className="block"><div className="wrap">
         <SectionHead eyebrow="Compare" title="What each package includes" />

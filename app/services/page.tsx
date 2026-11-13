@@ -6,7 +6,7 @@ export const metadata: Metadata = { title: "Services", description: "Home sample
 export default function ServicesPage() {
   return (
     <>
-      <PageHead eyebrow="Services" title="Four ways Medcloud looks after you" lede="High-quality services focused on preventing and accurately detecting disease, with cutting-edge technology and stringent quality control." />
+      <PageHead shape="cross" eyebrow="Services" title="Four ways Medcloud looks after you" lede="High-quality services focused on preventing and accurately detecting disease, with cutting-edge technology and stringent quality control." />
       <section className="block"><div className="wrap"><ServiceRows /></div></section>
       <Cta />
     </>
