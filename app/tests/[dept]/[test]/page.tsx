@@ -64,7 +64,7 @@ export default async function TestPage({ params }: Props) {
           {facts.map(([k, v], i) => <Reveal key={k} delay={i * 60}><div className="fact"><dt>{k}</dt><dd>{v}</dd></div></Reveal>)}
         </dl>
         {info.packages.length > 0 && (
-          <p className="fact-note">Included in {info.packages.map((p, i) => <span key={p.id}>{i > 0 && " and "}<Link className="sec-link" href="/packages">{p.name}</Link></span>)}. A package can cost less than booking tests one by one.</p>
+          <p className="fact-note">Included in {info.packages.map((p, i) => <span key={p.id}>{i > 0 && " and "}<Link className="sec-link" href="/packages">{p.name}</Link></span>)}. Ask about the package price when you book.</p>
         )}
         <p className="fact-note muted">General information, not medical advice. Your doctor and the Medcloud team will guide you. Or call <a className="sec-link" href={TEL}>{PHONE_DISPLAY}</a>.</p>
       </div></section>

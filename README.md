@@ -19,6 +19,7 @@ npm run build   # production build (all routes are static)
 | `/tests/[dept]/[test]` | One page per test (362), with price, booking and related tests |
 | `/packages` | Packages plus a comparison table |
 | `/services`, `/services/[slug]` | Services index and four service pages |
+| `/centres/[id]` | One page per centre |
 | `/centres`, `/about`, `/contact` | Centres map, about, contact form (hands off to WhatsApp) |
 
 The home page is a scroll story: `components/Orb.tsx` (three.js stage: sections marked `data-orb` and
@@ -44,10 +45,16 @@ All of it is switched off under `prefers-reduced-motion`.
 
 ## Before going live
 
-- Package prices are not published on the current site (only "starting @ INR 999*").
-- Concern groupings, tube-colour labels, FAQ wording, per-test booking notes and the map positions are
-  design additions written from the site's facts, not lab-supplied data.
-- No testimonials: the ones on the current site are placeholder text.
+Needs Medcloud's sign-off or real data; the site is written so these are easy to fill in:
+
+- **Clinical review.** Per-test descriptions, sample types and preparation notes (`ABOUT` and `testInfo` in
+  `lib/data.ts`) come from general medical knowledge and the test names, not from the lab.
+- **Report times, opening hours, per-centre services.** Not published anywhere; pages say "confirmed when you book".
+- **Package prices.** Only "starting @ INR 999*" is published.
+- **Privacy policy.** The footer links to the current site's policy. It must be reviewed against the booking flow
+  (name, mobile, address and test list sent over WhatsApp).
+- **Map positions** are approximate; **testimonials** on the current site are placeholder text and are left out.
+- **Not measured:** Lighthouse, Core Web Vitals, screen-reader behaviour.
 
 ## Themes
 
