@@ -64,7 +64,7 @@ export default function Orb() {
       scene.add(flight);
       const phys = (color: number, o: Partial<import("three").MeshPhysicalMaterialParameters> = {}) =>
         new THREE.MeshPhysicalMaterial({ color, roughness: 0.22, metalness: 0.05, clearcoat: 1, clearcoatRoughness: 0.15, envMapIntensity: 0.5, ...o });
-      const MINT = 0x1b8f7c, PEACH = 0xf0c27a, WHITE = 0xe9f4f1;
+      const MINT = 0x2b8f8a, PEACH = 0xdef2f1, WHITE = 0xf4fbfa;
       const groups = {} as Record<Shape, import("three").Group>;
       SHAPES.forEach((s) => { groups[s] = new THREE.Group(); groups[s].scale.setScalar(0); flight.add(groups[s]); });
 
@@ -72,7 +72,7 @@ export default function Orb() {
       const hc = document.createElement("canvas"); hc.width = hc.height = 256;
       const hx = hc.getContext("2d")!;
       const hg = hx.createRadialGradient(128, 128, 0, 128, 128, 128);
-      hg.addColorStop(0, "rgba(99,216,187,.36)"); hg.addColorStop(0.45, "rgba(60,170,180,.12)"); hg.addColorStop(1, "rgba(0,0,0,0)");
+      hg.addColorStop(0, "rgba(58,175,169,.34)"); hg.addColorStop(0.45, "rgba(58,175,169,.1)"); hg.addColorStop(1, "rgba(0,0,0,0)");
       hx.fillStyle = hg; hx.fillRect(0, 0, 256, 256);
       const halo = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(hc), transparent: true, depthWrite: false, blending: THREE.AdditiveBlending }));
       halo.scale.setScalar(5.6); halo.position.z = -1; flight.add(halo);
@@ -80,12 +80,12 @@ export default function Orb() {
       /* ---- cell ---- */
       const geo = new THREE.SphereGeometry(1, 64, 64);
       const base = (geo.attributes.position.array as Float32Array).slice();
-      groups.cell.add(new THREE.Mesh(geo, phys(MINT, { iridescence: 0.55, iridescenceIOR: 1.45, sheen: 0.2, sheenColor: new THREE.Color(0x7fe6cc), emissive: 0x06403c, emissiveIntensity: 0.3, envMapIntensity: 0.4 })));
+      groups.cell.add(new THREE.Mesh(geo, phys(MINT, { iridescence: 0.55, iridescenceIOR: 1.45, sheen: 0.2, sheenColor: new THREE.Color(0x7fe6cc), emissive: 0x124a48, emissiveIntensity: 0.3, envMapIntensity: 0.45 })));
       const ring = (r: number, tube: number, c: number, o: number) => new THREE.Mesh(new THREE.TorusGeometry(r, tube, 8, 200), new THREE.MeshBasicMaterial({ color: c, transparent: true, opacity: o }));
       const rings = [
-        { r: 1.5, tube: 0.007, rx: 1.15, ry: 0.3, sp: 0.25, c: 0xffffff, o: 0.55 },
+        { r: 1.5, tube: 0.007, rx: 1.15, ry: 0.3, sp: 0.25, c: 0x2b7a78, o: 0.6 },
         { r: 1.85, tube: 0.005, rx: 1.4, ry: -0.7, sp: -0.18, c: 0x74e2c5, o: 0.6 },
-        { r: 2.2, tube: 0.004, rx: 0.5, ry: 1.0, sp: 0.12, c: 0xf6d391, o: 0.4 },
+        { r: 2.2, tube: 0.004, rx: 0.5, ry: 1.0, sp: 0.12, c: 0x3aafa9, o: 0.5 },
       ].map((d) => { const m = ring(d.r, d.tube, d.c, d.o); m.rotation.set(d.rx, d.ry, 0); groups.cell.add(m); return { m, sp: d.sp }; });
       const satMat = [phys(0x74e2c5), phys(PEACH), phys(0xffffff)];
       const sats = Array.from({ length: 14 }, (_, i) => {
@@ -97,7 +97,7 @@ export default function Orb() {
       /* ---- dna: two strands of beads joined by rungs ---- */
       const helix = new THREE.Group(); groups.dna.add(helix);
       const bead = new THREE.SphereGeometry(0.105, 20, 20), rung = new THREE.CylinderGeometry(0.018, 0.018, 1.1, 8);
-      const mA = phys(0x2fc4a4, { emissive: 0x0a4a40, emissiveIntensity: 0.4 }), mB = phys(PEACH), mR = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.45 });
+      const mA = phys(0x3aafa9, { emissive: 0x0f4a48, emissiveIntensity: 0.4 }), mB = phys(PEACH), mR = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.45 });
       const N = 24;
       for (let i = 0; i < N; i++) {
         const a = i * 0.52, y = (i - (N - 1) / 2) * 0.155;
@@ -111,7 +111,7 @@ export default function Orb() {
       /* ---- scanner: gantry ring, patient table, sweeping scan light ---- */
       const gantry = new THREE.Group(); groups.scanner.add(gantry);
       gantry.add(new THREE.Mesh(new THREE.TorusGeometry(1.2, 0.42, 40, 120), phys(WHITE, { roughness: 0.3 })));
-      const bore = new THREE.Mesh(new THREE.TorusGeometry(0.8, 0.035, 12, 120), new THREE.MeshBasicMaterial({ color: 0x63d8bb }));
+      const bore = new THREE.Mesh(new THREE.TorusGeometry(0.8, 0.035, 12, 120), new THREE.MeshBasicMaterial({ color: 0x3aafa9 }));
       gantry.add(bore);
       const sweep = new THREE.Group(); gantry.add(sweep);
       const lamp = new THREE.Mesh(new THREE.SphereGeometry(0.09, 16, 16), new THREE.MeshBasicMaterial({ color: 0xffffff })); lamp.position.x = 0.8; sweep.add(lamp);
@@ -124,8 +124,8 @@ export default function Orb() {
       const crossM = phys(MINT, { emissive: 0x06403c, emissiveIntensity: 0.35, iridescence: 0.4 });
       const plus = new THREE.Group(); groups.cross.add(plus);
       plus.add(new THREE.Mesh(new RoundedBoxGeometry(2.0, 0.66, 0.5, 6, 0.16), crossM), new THREE.Mesh(new RoundedBoxGeometry(0.66, 2.0, 0.5, 6, 0.16), crossM));
-      const cr1 = ring(1.75, 0.006, 0xffffff, 0.5); cr1.rotation.x = 1.25; groups.cross.add(cr1);
-      const cr2 = ring(2.05, 0.005, 0xf6d391, 0.45); cr2.rotation.set(0.5, 0.9, 0); groups.cross.add(cr2);
+      const cr1 = ring(1.75, 0.006, 0x2b7a78, 0.55); cr1.rotation.x = 1.25; groups.cross.add(cr1);
+      const cr2 = ring(2.05, 0.005, 0x3aafa9, 0.5); cr2.rotation.set(0.5, 0.9, 0); groups.cross.add(cr2);
       const pulse = new THREE.Mesh(new THREE.SphereGeometry(0.08, 16, 16), phys(PEACH)); groups.cross.add(pulse);
 
       /* ---- tube: glass, blood sample, lavender cap, a 30-minute dial ---- */
@@ -134,7 +134,7 @@ export default function Orb() {
       const blood = new THREE.Mesh(new THREE.CapsuleGeometry(0.32, 0.8, 12, 32), phys(0xc8364f, { emissive: 0x5a0f1d, emissiveIntensity: 0.5, roughness: 0.3 })); blood.position.y = -0.42; tube.add(blood);
       const cap = new THREE.Mesh(new THREE.CylinderGeometry(0.46, 0.46, 0.42, 40), phys(0xa98bd6, { roughness: 0.45 })); cap.position.y = 1.18; tube.add(cap);
       tube.rotation.z = -0.5;
-      const dial = ring(1.7, 0.008, 0xffffff, 0.5); groups.tube.add(dial);
+      const dial = ring(1.7, 0.008, 0x2b7a78, 0.55); groups.tube.add(dial);
       const hand = new THREE.Group(); groups.tube.add(hand);
       const tip = new THREE.Mesh(new THREE.SphereGeometry(0.09, 16, 16), phys(PEACH)); tip.position.y = 1.7; hand.add(tip);
       for (let i = 0; i < 12; i++) { const t = new THREE.Mesh(new THREE.SphereGeometry(0.025, 8, 8), mR); t.position.set(Math.sin(i * 0.5236) * 1.7, Math.cos(i * 0.5236) * 1.7, 0); groups.tube.add(t); }

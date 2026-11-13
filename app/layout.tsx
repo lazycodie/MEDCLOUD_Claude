@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Footer, MobileBar } from "@/components/Chrome";
-import { Splash } from "@/components/Cinema";
 import { GlowTracker } from "@/components/Fx";
 import Header from "@/components/Header";
 import SlipDrawer, { Toast } from "@/components/SlipDrawer";
@@ -15,7 +14,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" data-theme="light" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: `try{var t=localStorage.getItem("mc-theme");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}` }} />
         {/* Swap for next/font/google if you prefer self-hosted fonts; the CSS reads --font-display/--font-body/--font-mono. */}
@@ -25,7 +24,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <noscript><style>{`.rv{opacity:1!important;transform:none!important}.splash{display:none}`}</style></noscript>
       </head>
       <body>
-        <Splash />
         <SlipProvider>
           <Header />
           <main>{children}</main>

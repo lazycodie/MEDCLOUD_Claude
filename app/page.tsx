@@ -24,31 +24,30 @@ export default function Home() {
     <>
       <Orb />
 
-      <section className="hero4" data-orb="0.36,0.02,0.92" data-shape="cell">
-        <div className="hero4-top">
-          <p className="kicker">Welcome to Medcloud <i>／</i> Diagnostics</p>
-          <div className="hstat right"><span className="hstat-line" /><b><CountUp value="350+" /></b><small>referring doctors</small></div>
-        </div>
-        <h1>
-          <span className="l l1"><span>We’ll ensure</span></span>
-          <span className="l l2"><span>you always get</span></span>
-          <span className="l l3"><span>the <em>best result.</em></span></span>
-        </h1>
-        <div className="hero4-bottom">
-          <div className="hero4-main">
-            <p className="lede">Medcloud is a leading healthcare service provider in India, specializing in advanced radiology and pathology with state of the art facilities.</p>
+      <section className="hero5" data-orb="0.5,0.02,1" data-shape="cell">
+        <div className="wrap hero5-grid">
+          <div className="hero5-copy">
+            <p className="kicker">Welcome to Medcloud Diagnostics</p>
+            <h1>
+              <span className="l"><span>We’ll ensure you</span></span>
+              <span className="l"><span>always get the</span></span>
+              <span className="l"><span><em>best result.</em></span></span>
+            </h1>
+            <p className="lede">Advanced radiology and pathology with state of the art facilities. Find your test, see its price, and book in a minute.</p>
             <HeroSearch />
             <div className="hero-cta">
-              <BookButton className="btn btn-amber" preset={{ mode: "home" }}>Make an appointment <span className="arrow">↗</span></BookButton>
-              <Link className="btn btn-onnavy" href="/tests">See all {TESTS.length} prices <span className="arrow">→</span></Link>
+              <BookButton className="btn btn-primary" preset={{ mode: "home" }}>Book home collection</BookButton>
+              <Link className="btn btn-ghost" href="/tests">See all {TESTS.length} prices <span className="arrow">→</span></Link>
             </div>
+            <ul className="trust">
+              <li><b><CountUp value="3000+" /></b>patients each month</li>
+              <li><b><CountUp value="350+" /></b>referring doctors</li>
+              <li><b><CountUp value="50+" /></b>network hospitals</li>
+              <li><b>4</b>centres</li>
+            </ul>
           </div>
-          <div className="hero4-stats">
-            <div className="hstat"><b><CountUp value="3000+" /></b><span className="hstat-line up" /><small>patients each month</small></div>
-            <div className="hstat right"><span className="hstat-line up" /><b><CountUp value="50+" /></b><small>network hospitals</small></div>
-          </div>
+          <div className="hero5-space" aria-hidden="true" />
         </div>
-        <p className="scroll-hint" aria-hidden="true">Scroll to discover <span /></p>
       </section>
 
       <Marquee />
@@ -108,7 +107,7 @@ export default function Home() {
         </Mosaic>
       </section>
 
-      <section className="block"><div className="wrap split">
+      <section className="block tint"><div className="wrap split">
         <SectionHead eyebrow="Popular tests" title={<>Small signals.<br /><em>Useful answers.</em></>} lede="The tests patients ask for most, with the price you pay." action={<Link className="btn btn-ghost" href="/tests">All {TESTS.length} tests <span className="arrow">→</span></Link>} />
         <PopularRows />
       </div></section>
@@ -118,7 +117,7 @@ export default function Home() {
         <PackageTeaser />
       </div></section>
 
-      <section className="block" id="centres"><div className="wrap">
+      <section className="block tint" id="centres"><div className="wrap">
         <SectionHead eyebrow="Find your centre" title={<>Care,<br /><em>closer to you.</em></>} lede="Four Medcloud centres across south Karnataka, between Bengaluru and Mysuru." action={<Link className="btn btn-ghost" href="/centres">All centres <span className="arrow">→</span></Link>} />
         <Reveal><Centres /></Reveal>
       </div></section>
