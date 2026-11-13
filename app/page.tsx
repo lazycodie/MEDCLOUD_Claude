@@ -1,84 +1,135 @@
 import Link from "next/link";
 import { BookButton } from "@/components/Buttons";
-import { HeroCanvas } from "@/components/Fx";
+import Centres from "@/components/Centres";
+import { Mosaic } from "@/components/Cinema";
 import HeroSearch from "@/components/HeroSearch";
-import { DeptBento, Faq, Marquee, PriceTabs } from "@/components/HomeSections";
-import { Reveal } from "@/components/Motion";
-import { CentreStrip, Cta, FoundersBig, HomeCollectionBand, PackageTeaser, PriceTicker, SectionHead, Services, Stats, Steps, Why } from "@/components/Sections";
-import { CONCERNS, PHONE_DISPLAY, TEL, TESTS } from "@/lib/data";
+import { Faq, Marquee } from "@/components/HomeSections";
+import { CountUp, Reveal } from "@/components/Motion";
+import Orb from "@/components/Orb";
+import { Cta, FoundersBig, PackageTeaser, PopularRows, SectionHead } from "@/components/Sections";
+import { DEPTS, PHONE_DISPLAY, SERVICES, TEL, TESTS, deptFrom, deptTests, rupee } from "@/lib/data";
+
+// where the 3D cell sits in each full-screen section: "x,y,scale" in viewport units
+const STORY = [
+  { slug: "diagnostic", orb: "-0.42,0.02,0.95", side: "right", title: <>The lab behind<br />the <em>answer.</em></> },
+  { slug: "imaging-centres", orb: "0.42,-0.04,1.05", side: "left", title: <>See what is<br /><em>beneath.</em></> },
+  { slug: "specialist-consultation", orb: "-0.4,0.06,0.85", side: "right", title: <>A specialist,<br />in the <em>same visit.</em></> },
+  { slug: "home-collection", orb: "0.4,0,1.1", side: "left", title: <>We come to you<br />in <em>30 minutes.</em></> },
+] as const;
+
+const TOP_DEPTS = ["radiology", "biochemistry", "haematology", "serology", "hormone-assays"] as const;
 
 export default function Home() {
   return (
     <>
-      <section className="hero3">
-        <HeroCanvas />
-        <span className="aurora a1" aria-hidden="true" /><span className="aurora a2" aria-hidden="true" /><span className="aurora a3" aria-hidden="true" />
-        <div className="wrap">
-          <p className="badge"><span className="pulse" />Home sample collection in 30 minutes</p>
-          <h1>
-            <span className="line"><span>Find your test.</span></span>
-            <span className="line"><span>See the <em>price.</em></span></span>
-            <span className="line"><span>Book in a minute.</span></span>
-          </h1>
-          <p className="lede">Medcloud brings advanced radiology and pathology to tier 2 and tier 3 cities. {TESTS.length} tests, every price upfront.</p>
-          <HeroSearch />
-          <div className="concerns">
-            {Object.keys(CONCERNS).map((c) => <Link key={c} className="chip" href={`/tests?concern=${c}`}>{c}</Link>)}
+      <Orb />
+
+      <section className="hero4" data-orb="0.3,0.04,1">
+        <div className="hero4-top">
+          <p className="kicker">Welcome to Medcloud <i>／</i> Diagnostics</p>
+          <div className="hstat right"><span className="hstat-line" /><b><CountUp value="350+" /></b><small>referring doctors</small></div>
+        </div>
+        <h1>
+          <span className="l l1"><span>We’ll ensure</span></span>
+          <span className="l l2"><span>you always get</span></span>
+          <span className="l l3"><span>the <em>best result.</em></span></span>
+        </h1>
+        <div className="hero4-bottom">
+          <div className="hero4-main">
+            <p className="lede">Medcloud is a leading healthcare service provider in India, specializing in advanced radiology and pathology with state of the art facilities.</p>
+            <HeroSearch />
+            <div className="hero-cta">
+              <BookButton className="btn btn-amber" preset={{ mode: "home" }}>Make an appointment <span className="arrow">↗</span></BookButton>
+              <Link className="btn btn-onnavy" href="/tests">See all {TESTS.length} prices <span className="arrow">→</span></Link>
+            </div>
           </div>
-          <div className="hero-cta">
-            <BookButton className="btn btn-primary" preset={{ mode: "home" }}>Book home collection</BookButton>
-            <a className="btn btn-onnavy" href={TEL}>Call {PHONE_DISPLAY}</a>
+          <div className="hero4-stats">
+            <div className="hstat"><b><CountUp value="3000+" /></b><span className="hstat-line up" /><small>patients each month</small></div>
+            <div className="hstat right"><span className="hstat-line up" /><b><CountUp value="50+" /></b><small>network hospitals</small></div>
           </div>
         </div>
-        <PriceTicker />
+        <p className="scroll-hint" aria-hidden="true">Scroll to discover <span /></p>
       </section>
-      <Stats />
+
       <Marquee />
 
-      <section className="block"><div className="wrap">
-        <SectionHead eyebrow="Departments" title="Nine departments, one price list" lede={`${TESTS.length} tests and scans, each with its price. Pick a department to see everything in it.`} action={<Link className="btn btn-ghost" href="/tests">Open full price list</Link>} />
-        <DeptBento />
+      {STORY.map((st, i) => {
+        const s = SERVICES.find((x) => x.slug === st.slug)!;
+        return (
+          <section key={s.slug} className={`story ${st.side}`} data-orb={st.orb}>
+            <div className="wrap">
+              <Reveal kind={st.side === "right" ? "left" : "right"} className="story-text">
+                <span className="story-n">{String(i + 1).padStart(2, "0")}</span>
+                <p className="kicker">{s.name}</p>
+                <h2>{st.title}</h2>
+                <p className="story-copy">{s.intro[0]}</p>
+                <div className="story-pills">{s.pills.map((p) => <span key={p}>{p}</span>)}</div>
+                <div className="story-acts">
+                  <Link className="btn btn-primary" href={`/services/${s.slug}`}>Explore {s.name.toLowerCase()} <span className="arrow">↗</span></Link>
+                  {s.dept && <Link className="story-link" href={`/tests/${s.dept}`}>See prices <span className="arrow">→</span></Link>}
+                  {s.slug === "home-collection" && <a className="story-link" href={TEL}>Call {PHONE_DISPLAY} <span className="arrow">→</span></a>}
+                </div>
+              </Reveal>
+            </div>
+          </section>
+        );
+      })}
+
+      <section className="mosaic-sec">
+        <Mosaic image="/field.jpg">
+          <div className="m-card m-a" data-mask>
+            <h3>{TESTS.length} tests</h3>
+            <p>Every price listed upfront</p>
+          </div>
+          <div className="m-card m-b" data-mask>
+            <p>Pick what your doctor prescribed,<br />add it to your list and send it to us.</p>
+            <Link className="m-btn" href="/tests">Open the price list</Link>
+          </div>
+          <div className="m-card m-c" data-mask>
+            <h2>Tests &amp;<br />prices</h2>
+          </div>
+          <div className="m-card m-d" data-mask>
+            <div className="m-depts">
+              {TOP_DEPTS.map((slug, i) => {
+                const d = DEPTS.find((x) => x.slug === slug)!;
+                return (
+                  <Link key={slug} href={`/tests/${slug}`} className={`m-dept ${i === 0 ? "active" : ""}`}>
+                    <span><b>{d.name}</b><small>{deptTests(slug).length} tests · from {rupee(deptFrom(slug))}</small></span>
+                    <i>{String(i + 1).padStart(2, "0")}</i>
+                  </Link>
+                );
+              })}
+              <Link href="/tests" className="m-dept">
+                <span><b>4 more departments</b><small>Clinical pathology, microbiology, histopathology, cytology</small></span>
+                <i>→</i>
+              </Link>
+            </div>
+          </div>
+        </Mosaic>
+      </section>
+
+      <section className="block"><div className="wrap split">
+        <SectionHead eyebrow="Popular tests" title={<>Small signals.<br /><em>Useful answers.</em></>} lede="The tests patients ask for most, with the price you pay." action={<Link className="btn btn-ghost" href="/tests">All {TESTS.length} tests <span className="arrow">→</span></Link>} />
+        <PopularRows />
       </div></section>
 
       <section className="block"><div className="wrap">
-        <SectionHead eyebrow="Quick picks" title="What are you testing for?" lede="Common tests grouped the way patients ask for them." />
-        <Reveal><PriceTabs /></Reveal>
-      </div></section>
-
-      <HomeCollectionBand />
-
-      <section className="block"><div className="wrap">
-        <SectionHead eyebrow="Health packages" title="Checkups, bundled" lede="Annual health packages start at ₹999*." action={<Link className="btn btn-ghost" href="/packages">See what each includes</Link>} />
+        <SectionHead eyebrow="Health packages" title={<>Choose a clearer<br /><em>starting point.</em></>} lede="Annual health packages start at ₹999*." action={<Link className="btn btn-ghost" href="/packages">Compare packages <span className="arrow">→</span></Link>} />
         <PackageTeaser />
       </div></section>
 
-      <section className="block"><div className="wrap">
-        <SectionHead eyebrow="Services" title="Lab tests, scans and specialists in one place" action={<Link className="btn btn-ghost" href="/services">All services</Link>} />
-        <Services />
+      <section className="block" id="centres"><div className="wrap">
+        <SectionHead eyebrow="Find your centre" title={<>Care,<br /><em>closer to you.</em></>} lede="Four Medcloud centres across south Karnataka, between Bengaluru and Mysuru." action={<Link className="btn btn-ghost" href="/centres">All centres <span className="arrow">→</span></Link>} />
+        <Reveal><Centres /></Reveal>
       </div></section>
 
       <section className="block"><div className="wrap">
-        <SectionHead eyebrow="How booking works" title="Three steps, no account needed" />
-        <Steps />
-      </div></section>
-
-      <section className="block"><div className="wrap">
-        <SectionHead eyebrow="Why Medcloud" title="Why patients and doctors choose us" />
-        <Why />
-      </div></section>
-
-      <section className="block"><div className="wrap">
-        <SectionHead eyebrow="Centres" title="Four centres across south Karnataka" lede="Between Bengaluru and Mysuru, close to where our patients live." action={<Link className="btn btn-ghost" href="/centres">Map and directions</Link>} />
-        <CentreStrip />
-      </div></section>
-
-      <section className="block"><div className="wrap">
-        <SectionHead eyebrow="Founders" title="Led by a radiologist and a pathologist" action={<Link className="btn btn-ghost" href="/about">About Medcloud</Link>} />
+        <SectionHead eyebrow="Founders" title={<>Led by a radiologist<br />and a <em>pathologist.</em></>} action={<Link className="btn btn-ghost" href="/about">About Medcloud <span className="arrow">→</span></Link>} />
         <FoundersBig />
       </div></section>
 
       <section className="block"><div className="wrap faq-wrap">
-        <SectionHead eyebrow="Questions" title="Before you book" lede="Still unsure? Call +91 81508 15026 and we’ll help." />
+        <SectionHead eyebrow="Questions" title={<>Before<br />you <em>book.</em></>} lede="Still unsure? Call +91 81508 15026 and we’ll help." />
         <Faq />
       </div></section>
       <Cta />

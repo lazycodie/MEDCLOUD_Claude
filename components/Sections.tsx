@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { CENTRES, PACKS, PHONE_DISPLAY, POPULAR, SERVICES, TEL, TUBES, WHATSAPP, WHY, rupee, testHref, type Tube } from "@/lib/data";
+import { CENTRES, DEPT_NAME, PACKS, PHONE_DISPLAY, POPULAR, SERVICES, TEL, TUBES, WHATSAPP, WHY, rupee, testHref, type Tube } from "@/lib/data";
 import { AddButton, AddPackageButton, BookButton } from "./Buttons";
 import { CountUp, Reveal } from "./Motion";
 
@@ -16,7 +16,7 @@ export function PageHead({ eyebrow, title, lede, crumbs, children }: { eyebrow: 
   );
 }
 
-export function SectionHead({ eyebrow, title, lede, action }: { eyebrow: string; title: string; lede?: string; action?: React.ReactNode }) {
+export function SectionHead({ eyebrow, title, lede, action }: { eyebrow: string; title: React.ReactNode; lede?: string; action?: React.ReactNode }) {
   return (
     <Reveal className="sec-head"><div>
       <p className="eyebrow">{eyebrow}</p>
@@ -306,5 +306,23 @@ export function ServiceRows() {
         </Reveal>
       ))}
     </div>
+  );
+}
+
+/** Popular tests as large typographic rows rather than cards. */
+export function PopularRows() {
+  return (
+    <ul className="prows">
+      {POPULAR.map((t, i) => (
+        <li key={t.id}>
+          <Reveal delay={i * 50} className="prow">
+            <span className="prow-n">{String(i + 1).padStart(2, "0")}</span>
+            <Link href={testHref(t)} className="prow-name">{t.name}<small>{t.dept !== "package" && DEPT_NAME[t.dept]}</small></Link>
+            <span className="price">{rupee(t.price!)}</span>
+            <AddButton id={t.id} />
+          </Reveal>
+        </li>
+      ))}
+    </ul>
   );
 }
