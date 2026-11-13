@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Footer, MobileBar } from "@/components/Chrome";
+import { GlowTracker } from "@/components/Fx";
 import Header from "@/components/Header";
 import SlipDrawer, { Toast } from "@/components/SlipDrawer";
 import { SlipProvider } from "@/components/SlipProvider";
@@ -29,6 +30,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <MobileBar />
           <SlipDrawer />
           <Toast />
+          <GlowTracker />
         </SlipProvider>
       </body>
     </html>

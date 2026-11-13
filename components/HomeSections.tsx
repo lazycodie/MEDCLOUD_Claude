@@ -22,7 +22,7 @@ export function DeptBento() {
         const big = d.slug === "radiology" ? "b-xl" : ["biochemistry", "haematology", "serology", "hormone-assays"].includes(d.slug) ? "b-wide" : "";
         return (
           <Reveal key={d.slug} delay={(i % 4) * 70} className={`bento-cell ${big}`} kind="zoom">
-            <Link href={`/tests/${d.slug}`} className={`tile ${d.slug === "radiology" ? "tile-dark" : ""}`}>
+            <Link href={`/tests/${d.slug}`} className={`tile glow ${d.slug === "radiology" ? "tile-dark" : ""}`}>
               <span className="tile-count">{n}</span>
               <span className="tile-body">
                 <b>{d.name}</b>

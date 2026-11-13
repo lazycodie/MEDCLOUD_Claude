@@ -41,14 +41,9 @@ export default function Header() {
 
   return (
     <>
-      <div className="util"><div className="wrap">
-        <span><span className="pulse" />Home sample collection in 30 minutes</span>
-        <span>Call or WhatsApp <a href={TEL}>{PHONE_DISPLAY}</a></span>
-      </div></div>
-
       <header className={`site ${scrolled ? "scrolled" : ""}`} onMouseLeave={() => setMenu(null)}>
         <div className="wrap">
-          <Link className="logo" href="/" aria-label="Medcloud home"><Image src="/logo.png" alt="Medcloud" width={172} height={100} priority /></Link>
+          <Link className="logo" href="/" aria-label="Medcloud home"><Image src="/logo-light.png" alt="Medcloud" width={172} height={100} priority /></Link>
           <nav className="main" aria-label="Main">
             {LINKS.map((l) => l.menu ? (
               <div key={l.href} className="nav-item" onMouseEnter={() => setMenu(l.menu!)}>

@@ -22,7 +22,7 @@ export default function ContactPage() {
           <Reveal kind="right" delay={280}><Link className="contact-row" href="/centres"><small>Our locations</small><b>{CENTRES.map((c) => c.name).join(", ")}</b><span className="arrow" aria-hidden="true">→</span></Link></Reveal>
         </div>
       </div></section>
-      <section className="block band"><div className="wrap faq-wrap">
+      <section className="block"><div className="wrap faq-wrap">
         <SectionHead eyebrow="Questions" title="Before you book" />
         <Faq />
       </div></section>

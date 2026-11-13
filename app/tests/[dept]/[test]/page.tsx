@@ -50,7 +50,7 @@ export default async function TestPage({ params }: Props) {
       </div></section>
 
       {related.length > 0 && (
-        <section className="block band"><div className="wrap">
+        <section className="block"><div className="wrap">
           <SectionHead eyebrow={d.name} title="Related tests" action={<Link className="btn btn-ghost" href={`/tests/${d.slug}`}>All {d.name.toLowerCase()} tests</Link>} />
           <ul className="pgrid static">
             {related.map((r) => (

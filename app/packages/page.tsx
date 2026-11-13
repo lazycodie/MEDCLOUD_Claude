@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Faq } from "@/components/HomeSections";
 import { Cta, PackageGrid, PageHead, SectionHead, Steps } from "@/components/Sections";
 import { PACKS } from "@/lib/data";
 
@@ -20,7 +19,7 @@ export default function PackagesPage() {
     <>
       <PageHead eyebrow="Health packages" title="Checkups, bundled" lede="Annual health packages start at ₹999*. Call +91 81508 15026 for the current price of each package." />
       <section className="block"><div className="wrap"><PackageGrid /></div></section>
-      <section className="block band"><div className="wrap">
+      <section className="block"><div className="wrap">
         <SectionHead eyebrow="Compare" title="What each package includes" />
         <div className="cmp-scroll"><table className="cmp">
           <thead><tr><th scope="col">Test</th>{PACKS.map((p) => <th scope="col" key={p.id}>{p.name}</th>)}</tr></thead>
@@ -32,10 +31,6 @@ export default function PackagesPage() {
       <section className="block"><div className="wrap">
         <SectionHead eyebrow="How booking works" title="Three steps, no account needed" />
         <Steps />
-      </div></section>
-      <section className="block band"><div className="wrap faq-wrap">
-        <SectionHead eyebrow="Questions" title="Before you book" />
-        <Faq />
       </div></section>
       <Cta />
     </>

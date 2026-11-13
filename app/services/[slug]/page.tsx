@@ -43,7 +43,7 @@ export default async function ServicePage({ params }: Props) {
       </div></section>
 
       {s.dept && (
-        <section className="block band"><div className="wrap">
+        <section className="block"><div className="wrap">
           <SectionHead eyebrow="Prices" title={`${DEPT_NAME[s.dept]} price list`} action={<Link className="btn btn-ghost" href="/tests">All departments</Link>} />
           <Suspense><Catalogue dept={s.dept} pageSize={8} /></Suspense>
         </div></section>

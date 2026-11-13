@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { PACKS, PHONE_DISPLAY, POPULAR, SERVICES, TEL, TUBES, WHATSAPP, WHY, rupee, testHref, type Tube } from "@/lib/data";
+import { CENTRES, PACKS, PHONE_DISPLAY, POPULAR, SERVICES, TEL, TUBES, WHATSAPP, WHY, rupee, testHref, type Tube } from "@/lib/data";
 import { AddButton, AddPackageButton, BookButton } from "./Buttons";
 import { CountUp, Reveal } from "./Motion";
 
@@ -63,7 +63,7 @@ export function PackageGrid() {
           );
           return (
             <Reveal key={p.id} delay={i * 90}>
-              <article className={`pk ${p.feature ? "feature" : ""}`}>
+              <article className={`pk glow ${p.feature ? "feature" : ""}`}>
                 <div className="meta">
                   <span className="tag g">{p.feature ? "From ₹999*" : "Price on call"}</span>
                   {p.tags.map((t) => <span className="tag" key={t}>{t}</span>)}
@@ -90,7 +90,7 @@ export function Services() {
     <div className="svc-grid">
       {SERVICES.map((s, i) => (
         <Reveal key={s.slug} delay={i * 80} className={i === 0 ? "svc-first" : ""}>
-          <article className={`svc ${i === 0 ? "home" : ""}`}>
+          <article className={`svc glow ${i === 0 ? "home" : ""}`}>
             <h3>{s.name}</h3>
             <p>{s.short}</p>
             <div className="pills">{s.pills.map((x) => <span className="pill" key={x}>{x}</span>)}</div>
@@ -147,7 +147,7 @@ export function HomeCollectionBand() {
 export function Why() {
   return (
     <div className="why">
-      {WHY.map((w, i) => <Reveal key={w.title} delay={i * 80}><div className="why-card"><span className="why-n">{String(i + 1).padStart(2, "0")}</span><h3>{w.title}</h3><p>{w.body}</p></div></Reveal>)}
+      {WHY.map((w, i) => <Reveal key={w.title} delay={i * 80}><div className="why-card glow"><span className="why-n">{String(i + 1).padStart(2, "0")}</span><h3>{w.title}</h3><p>{w.body}</p></div></Reveal>)}
     </div>
   );
 }
@@ -192,5 +192,119 @@ export function Cta() {
       <Reveal><h2>Get one step ahead of disease</h2><p>Stay proactive with preventive measures and regular health checkups.</p></Reveal>
       <div className="acts"><BookButton className="btn btn-amber">Book a test</BookButton><a className="btn btn-onnavy" href={WHATSAPP} target="_blank" rel="noopener">WhatsApp us</a></div>
     </div></section>
+  );
+}
+
+/* ---------- v3 sections ---------- */
+
+/** Auto-scrolling row of real prices under the hero; pauses on hover so + can be tapped. */
+export function PriceTicker() {
+  const row = (hidden?: boolean) => (
+    <ul aria-hidden={hidden}>
+      {POPULAR.map((t) => (
+        <li key={t.id} className="tick">
+          <Link href={testHref(t)} tabIndex={hidden ? -1 : 0}><small>Popular test</small><b>{t.name}</b></Link>
+          <span><span className="price">{rupee(t.price!)}</span>{!hidden && <AddButton id={t.id} />}</span>
+        </li>
+      ))}
+    </ul>
+  );
+  return <div className="ticker" aria-label="Popular test prices"><div className="ticker-track">{row()}{row(true)}</div></div>;
+}
+
+export function PackageTeaser() {
+  return (
+    <div className="pkt">
+      {PACKS.map((p, i) => (
+        <Reveal key={p.id} delay={i * 90}>
+          <Link href="/packages" className={`pkt-card glow ${p.feature ? "feature" : ""}`}>
+            <span className="pkt-n">{p.items.length}<small>tests &amp; scans</small></span>
+            <b>{p.name}</b>
+            <span>{p.forWho}</span>
+            <span className="pkt-foot"><span className="tag g">{p.feature ? "From ₹999*" : "Price on call"}</span><span className="arrow" aria-hidden="true">→</span></span>
+          </Link>
+        </Reveal>
+      ))}
+    </div>
+  );
+}
+
+export function CentreStrip() {
+  return (
+    <div className="cstrip">
+      {CENTRES.map((c, i) => (
+        <Reveal key={c.id} delay={i * 80}>
+          <Link href="/centres" className="cstrip-card glow">
+            <span className="cstrip-n">{String(i + 1).padStart(2, "0")}</span>
+            <b>{c.name}</b>
+            <span>{c.address}</span>
+            <span className="arrow" aria-hidden="true">→</span>
+          </Link>
+        </Reveal>
+      ))}
+    </div>
+  );
+}
+
+/** About page: the "golden triangle" from Medcloud's vision statement. */
+export function Triangle() {
+  const pts = [
+    { k: "Affordability", d: "Holistic, affordable healthcare. Every price on this site is listed upfront.", x: 200, y: 44 },
+    { k: "Accessibility", d: "Advanced diagnostics set up in tier 2 and tier 3 cities, plus home collection in 30 minutes.", x: 52, y: 300 },
+    { k: "Quality", d: "State of the art facilities, stringent quality control and qualified specialists.", x: 348, y: 300 },
+  ];
+  return (
+    <div className="tri">
+      <Reveal kind="zoom">
+        <svg viewBox="0 0 400 350" role="img" aria-label="The golden triangle: Affordability, Accessibility, Quality">
+          <defs><linearGradient id="tg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#35e0a6" /><stop offset="1" stopColor="#7db1ff" /></linearGradient></defs>
+          <path className="tri-line" d="M200 44 L52 300 L348 300 Z" fill="rgba(53,224,166,.06)" stroke="url(#tg)" strokeWidth="2.5" strokeLinejoin="round" />
+          <circle className="tri-orbit" cx="200" cy="215" r="58" fill="none" stroke="rgba(255,255,255,.18)" strokeDasharray="3 7" />
+          <text x="200" y="210" textAnchor="middle" className="tri-mid">GOLDEN</text>
+          <text x="200" y="230" textAnchor="middle" className="tri-mid">TRIANGLE</text>
+          {pts.map((p) => <g key={p.k}><circle cx={p.x} cy={p.y} r="16" fill="rgba(53,224,166,.18)" /><circle cx={p.x} cy={p.y} r="7" fill="#35e0a6" /></g>)}
+        </svg>
+      </Reveal>
+      <ol className="tri-list">
+        {pts.map((p, i) => <li key={p.k}><Reveal delay={i * 110} kind="left"><h3>{p.k}</h3><p>{p.d}</p></Reveal></li>)}
+      </ol>
+    </div>
+  );
+}
+
+export function FoundersBig() {
+  const f = [
+    { img: "/founder-chandan.png", name: "Dr Chandan K.", deg: "MBBS, DNB (RD), FIFM, (LLB)", role: "Radiology" },
+    { img: "/founder-mala.jpg", name: "Dr Mala G R.", deg: "MBBS, MD (Pathology)", role: "Pathology" },
+  ];
+  return (
+    <div className="fbig">
+      {f.map((x, i) => (
+        <Reveal key={x.name} delay={i * 120}>
+          <div className="fbig-card glow">
+            <Image src={x.img} alt={x.name} width={212} height={234} />
+            <div><span className="tag g">{x.role}</span><h3>{x.name}</h3><p>{x.deg}</p></div>
+          </div>
+        </Reveal>
+      ))}
+    </div>
+  );
+}
+
+/** Services index: large numbered rows instead of the home page's cards. */
+export function ServiceRows() {
+  return (
+    <div className="srows">
+      {SERVICES.map((s, i) => (
+        <Reveal key={s.slug} delay={i * 70}>
+          <Link href={`/services/${s.slug}`} className="srow">
+            <span className="srow-n">{String(i + 1).padStart(2, "0")}</span>
+            <span className="srow-main"><b>{s.name}</b><span>{s.short}</span></span>
+            <span className="srow-pills">{s.pills.slice(0, 3).map((p) => <em key={p}>{p}</em>)}</span>
+            <span className="arrow" aria-hidden="true">→</span>
+          </Link>
+        </Reveal>
+      ))}
+    </div>
   );
 }

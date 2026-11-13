@@ -8,7 +8,7 @@ export function Footer() {
     <footer>
       <div className="wrap">
         <div>
-          <span className="flogo"><Image src="/logo.png" alt="Medcloud" width={172} height={100} /></span>
+          <span className="flogo"><Image src="/logo-light.png" alt="Medcloud" width={172} height={100} /></span>
           <p>Advanced radiology and pathology, with state of the art facilities, in Mandya, Malavalli, Kunigal and Ramanagara.</p>
           <p className="fcall"><a href={TEL}>{PHONE_DISPLAY}</a></p>
         </div>
@@ -26,6 +26,7 @@ export function Footer() {
           <li><a href="https://medcloudlabs.com/privacy-policy/">Privacy policy</a></li>
         </ul></div>
       </div>
+      <div className="wordmark" aria-hidden="true"><span>MEDCLOUD</span></div>
       <div className="legal"><div className="wrap"><span>© {new Date().getFullYear()} Medcloud</span><span>Redesign concept. Prices as listed on medcloudlabs.com; confirm at booking.</span></div></div>
     </footer>
   );
