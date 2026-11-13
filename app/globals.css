@@ -1216,3 +1216,27 @@ footer{background:#17252a}
 .count{background:var(--green);color:var(--on-green)}
 .tag.g{background:var(--green-soft);color:var(--green)}
 .tag{background:var(--green-soft);color:var(--green)}
+
+/* ================= v7: flush header on the top layer, theme switch at the side ================= */
+/* The header is a solid bar pinned to the very top, so nothing shows in a gap above it. */
+header.site{top:0;margin-top:0;padding:0;z-index:80;background:rgba(var(--k),.94);backdrop-filter:blur(16px) saturate(1.3);border-bottom:1px solid var(--line);box-shadow:none}
+header.site.scrolled{box-shadow:0 10px 30px -20px rgba(23,37,42,.45)}
+header.site>.wrap,header.site.scrolled>.wrap{background:none;border:0;border-radius:0;box-shadow:none;backdrop-filter:none;min-height:68px;padding-inline:max(18px,env(safe-area-inset-left,0px)) max(18px,env(safe-area-inset-right,0px))}
+header.site.scrolled>.wrap{min-height:60px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:81;background:var(--bg)}
+.progress{left:0;right:0;bottom:-1px;border-radius:0}
+.mega{top:100%;left:0;right:0;max-width:none;border-radius:0 0 22px 22px;border-top:0}
+header.site::before{display:none}
+.mnav{z-index:79;padding-top:96px}
+.mbar{z-index:78}
+.toast{z-index:95}
+.hero5,.page-head{margin-top:0;padding-top:0}
+html{scroll-padding-top:84px}
+.cats,.split .sec-head,.faq-wrap .sec-head{top:88px}
+
+.theme-toggle.side{position:fixed;right:max(12px,env(safe-area-inset-right,0px));top:50%;transform:translateY(-50%);z-index:70;padding:0}
+.theme-toggle.side .tt-track{flex-direction:column;justify-content:space-between;width:38px;height:72px;padding:9px 0;background:var(--solid);border-color:var(--line-2);box-shadow:0 12px 30px -14px rgba(23,37,42,.5)}
+.theme-toggle.side .tt-knob{top:4px;left:4px;width:28px;height:28px;transform:translateY(34px)}
+:root[data-theme="light"] .theme-toggle.side .tt-knob{transform:none}
+.theme-toggle.side:hover .tt-track{border-color:var(--green)}
+@media (max-width:900px){.theme-toggle.side{top:auto;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:none;right:10px}}

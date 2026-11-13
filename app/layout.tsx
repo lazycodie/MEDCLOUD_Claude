@@ -3,6 +3,7 @@ import "./globals.css";
 import { Footer, MobileBar } from "@/components/Chrome";
 import { GlowTracker } from "@/components/Fx";
 import Header from "@/components/Header";
+import ThemeToggle from "@/components/ThemeToggle";
 import SlipDrawer, { Toast } from "@/components/SlipDrawer";
 import { SlipProvider } from "@/components/SlipProvider";
 
@@ -30,6 +31,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Footer />
           <MobileBar />
           <SlipDrawer />
+          <ThemeToggle className="side" />
           <Toast />
           <GlowTracker />
         </SlipProvider>

@@ -6,7 +6,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { DEPTS, PHONE_DISPLAY, SERVICES, TEL, TESTS, WHATSAPP, deptFrom, rupee } from "@/lib/data";
 import { BookButton, SlipButton } from "./Buttons";
-import ThemeToggle from "./ThemeToggle";
 
 type Menu = "tests" | "services" | null;
 const LINKS: { href: string; label: string; menu?: Exclude<Menu, null> }[] = [
@@ -56,7 +55,6 @@ export default function Header() {
             ))}
           </nav>
           <div className="head-actions">
-            <ThemeToggle />
             <SlipButton />
             <BookButton className="btn btn-primary btn-sm book-top">Book a test</BookButton>
             <button className="burger" aria-label={mobile ? "Close menu" : "Open menu"} aria-expanded={mobile} onClick={() => setMobile(!mobile)}>
