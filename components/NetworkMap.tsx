@@ -33,7 +33,7 @@ export default function NetworkMap() {
     const pts = [...CENTRES, ...REFERENCE_CITIES];
     return [[Math.min(...pts.map((p) => p.lng)), Math.min(...pts.map((p) => p.lat))], [Math.max(...pts.map((p) => p.lng)), Math.max(...pts.map((p) => p.lat))]];
   }, []);
-  const pad = () => (window.innerWidth < 760 ? { top: 56, bottom: 56, left: 44, right: 44 } : { top: 80, bottom: 70, left: 90, right: 90 });
+  const pad = () => (window.innerWidth < 760 ? { top: 56, bottom: 56, left: 44, right: 44 } : { top: 120, bottom: 70, left: 90, right: 90 });
 
   const reset = useCallback(() => {
     const m = mapRef.current; if (!m) return;
@@ -97,13 +97,14 @@ export default function NetworkMap() {
           CENTRES.forEach((c, i) => {
             const b = document.createElement("button");
             b.type = "button"; b.className = `nm-pin${c.approx ? " approx" : ""}`; b.style.setProperty("--i", String(i));
-            b.setAttribute("aria-label", `Medcloud ${c.name}${c.approx ? ", approximate location" : ""}. Show address and directions.`);
             b.innerHTML = `<span class="nm-halo"></span><span class="nm-dot"></span><span class="nm-label">${c.name}</span>`;
             b.addEventListener("click", (e) => { e.stopPropagation(); choose(c.id); });
             b.addEventListener("mouseenter", () => setHover(c.id)); b.addEventListener("mouseleave", () => setHover(null));
             b.addEventListener("focus", () => setHover(c.id)); b.addEventListener("blur", () => setHover(null));
             markers.current[c.id] = b;
             made.push(new ml.Marker({ element: b, anchor: "center" }).setLngLat([c.lng, c.lat]).addTo(map!));
+            // set after addTo: MapLibre writes its own generic "Map marker" label
+            b.setAttribute("aria-label", `Medcloud ${c.name}${c.approx ? ", approximate location" : ""}. Show address and directions.`);
           });
 
           setStatus("ready");
@@ -217,7 +218,7 @@ export default function NetworkMap() {
 
 /** Recolour the base style to the Medcloud palette: soft land, pale teal water, quiet roads, navy labels. */
 function brandStyle(map: MlMap) {
-  const set = (id: string, prop: string, value: unknown) => { try { (map.setPaintProperty as (l: string, p: string, v: unknown) => void)(id, prop, value); } catch { /* layer or property not in this style */ } };
+  const set = (id: string, prop: string, value: unknown) => { try { (map as unknown as { setPaintProperty: (l: string, p: string, v: unknown) => void }).setPaintProperty(id, prop, value); } catch { /* layer or property not in this style */ } };
   for (const l of map.getStyle().layers ?? []) {
     const id = l.id;
     if (l.type === "background") set(id, "background-color", "#F3F7F8");

@@ -7,7 +7,7 @@ export const metadata: Metadata = { title: "Centres", description: "Medcloud cen
 export default function CentresPage() {
   return (
     <>
-      <PageHead eyebrow="The Medcloud network" title="Care, closer to home" lede="Between Bengaluru and Mysuru, close to where our patients live. Or stay home and we collect your sample in 30 minutes." />
+      <PageHead eyebrow="The Medcloud network" title="Care, closer to home" lede="Discover Medcloud diagnostic centres across Mandya, Malavalli, Kunigal and Ramanagara. Choose your nearest centre and explore location information and directions." />
       <section className="block"><div className="wrap"><NetworkMap /></div></section>
       <Cta />
     </>

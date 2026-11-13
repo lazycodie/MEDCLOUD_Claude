@@ -66,3 +66,22 @@ applied before first paint by a small script in `app/layout.tsx`. Colours are to
 
 Visme "Clean and Modern" (#24): `#17252A` ink, `#2B7A78` teal, `#3AAFA9` aqua, `#DEF2F1` pale aqua, `#FEFFFF` white.
 Tokens live in the "v6" block of `app/globals.css`.
+
+## Interactive network map
+
+`components/NetworkMap.tsx` is a MapLibre GL JS map (v4) on the home page and `/centres`. It lazy-loads when the
+section nears the viewport, recolours the base style to the brand palette, and cleans up on unmount.
+
+- **Tiles:** OpenFreeMap "positron" (OpenStreetMap data), which needs no API key. To use another provider, set
+  `NEXT_PUBLIC_MAP_STYLE_URL` to a MapLibre style URL. Only put provider-approved public tokens in that URL.
+- **Locations:** `CENTRES` and `REFERENCE_CITIES` in `lib/data.ts` (latitude/longitude; the map converts to
+  GeoJSON order). Bengaluru and Mysuru are reference labels, not centres.
+- **Fallback:** if the map cannot load, the panel still lists every centre with its address and directions link.
+- **Network lines** between the centres are decorative and labelled as such; they are not routes.
+
+Pins that still need manual verification before launch:
+
+- **Malavalli** is pinned on the Government Hospital opposite the centre (`approx: true`). Replace with the
+  surveyed Kullegowda Complex coordinates and remove the flag. Directions use a search query until then.
+- **Ramanagara:** confirm the facility name on Medcloud's directions listing matches this centre.
+- **Mandya, Kunigal, Ramanagara** use supplied coordinates; directions open Medcloud's own Google Maps links.
