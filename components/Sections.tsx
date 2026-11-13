@@ -7,7 +7,7 @@ import Orb, { type Shape } from "./Orb";
 
 export function PageHead({ eyebrow, title, lede, crumbs, children, shape }: { eyebrow: string; title: string; lede?: string; crumbs?: { href: string; label: string }[]; children?: React.ReactNode; shape?: Shape }) {
   return (
-    <section className={`page-head ${shape ? "has-3d" : ""}`} data-orb={shape ? "0.56,0.02,0.62" : undefined} data-shape={shape}>{shape && <Orb />}<div className="wrap">
+    <section className={`page-head ${shape ? "has-3d" : ""}`} data-orb={shape ? "0.56,-0.1,0.56" : undefined} data-shape={shape}>{shape && <Orb />}<div className="wrap">
       {crumbs && <p className="crumbs"><Link href="/">Home</Link>{crumbs.map((c) => <span key={c.href}> / <Link href={c.href}>{c.label}</Link></span>)}</p>}
       <p className="eyebrow">{eyebrow}</p>
       <h1>{title}</h1>

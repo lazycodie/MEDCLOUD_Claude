@@ -16,7 +16,7 @@ export default function AboutPage() {
       <PageHead shape="cell" eyebrow="About Medcloud" title="Advanced diagnostics, closer to home" lede="Medcloud is a leading Healthcare service provider in India, specializing in advanced radiology and pathology solutions equipped with state of the art facilities." />
       <Stats />
 
-      <section className="block"><div className="wrap story">
+      <section className="block"><div className="wrap story-grid">
         <Reveal><p className="story-lead">We provide high-quality and accessible services that positively transform lives by providing easy access to vital comprehensive healthcare.</p></Reveal>
         <Reveal delay={120}><p className="story-body">Medcloud is a trusted choice among physicians and a preferred partner for continuous patient support throughout their healthcare journey. About 3000 cases and patients come through our four centres each month, looked after by 20 expert staff.</p></Reveal>
       </div></section>
