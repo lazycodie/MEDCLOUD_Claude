@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { BookButton } from "@/components/Buttons";
-import Centres from "@/components/Centres";
+import NetworkMap from "@/components/NetworkMap";
 import { Mosaic } from "@/components/Cinema";
 import HeroSearch from "@/components/HeroSearch";
 import { Faq, Marquee } from "@/components/HomeSections";
@@ -124,8 +124,8 @@ export default function Home() {
       </div></section>
 
       <section className="block tint" id="centres"><div className="wrap">
-        <SectionHead eyebrow="Find your centre" title={<>Care,<br /><em>closer to you.</em></>} lede="Four Medcloud centres across south Karnataka, between Bengaluru and Mysuru." action={<Link className="btn btn-ghost" href="/centres">All centres <span className="arrow">→</span></Link>} />
-        <Reveal><Centres /></Reveal>
+        <SectionHead eyebrow="The Medcloud network" title={<>Care, <em>closer to home.</em></>} lede="Discover Medcloud diagnostic centres across Mandya, Malavalli, Kunigal and Ramanagara. Choose your nearest centre and explore location information and directions." action={<Link className="btn btn-ghost" href="/centres">Explore our centres <span className="arrow">→</span></Link>} />
+        <NetworkMap />
       </div></section>
 
       <section className="block"><div className="wrap">

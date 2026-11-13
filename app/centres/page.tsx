@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Centres from "@/components/Centres";
+import NetworkMap from "@/components/NetworkMap";
 import { Cta, PageHead } from "@/components/Sections";
 
 export const metadata: Metadata = { title: "Centres", description: "Medcloud centres in Mandya, Malavalli, Kunigal and Ramanagara, with addresses and directions." };
@@ -7,8 +7,8 @@ export const metadata: Metadata = { title: "Centres", description: "Medcloud cen
 export default function CentresPage() {
   return (
     <>
-      <PageHead eyebrow="Centres" title="Four centres across south Karnataka" lede="Between Bengaluru and Mysuru, close to where our patients live. Or stay home and we collect your sample in 30 minutes." />
-      <section className="block"><div className="wrap"><Centres /></div></section>
+      <PageHead eyebrow="The Medcloud network" title="Care, closer to home" lede="Between Bengaluru and Mysuru, close to where our patients live. Or stay home and we collect your sample in 30 minutes." />
+      <section className="block"><div className="wrap"><NetworkMap /></div></section>
       <Cta />
     </>
   );

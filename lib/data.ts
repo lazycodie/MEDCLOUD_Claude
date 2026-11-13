@@ -113,12 +113,41 @@ export const CONCERNS: Record<string, RegExp> = {
   Vitamins: /vitamin|folic|ferritin|iron/i,
 };
 
-export type Centre = { id: string; name: string; address: string; map: string; main?: boolean; x: number; y: number; lx: number; ly: number; anchor: "start" | "end" };
+/* ---------- centres ----------
+   Coordinates are [latitude, longitude] here; the map converts to GeoJSON's [lng, lat].
+   `approx: true` means the pin is a nearby landmark, not the surveyed building. */
+export type Centre = {
+  id: string; name: string; address: string; map: string; main?: boolean;
+  lat: number; lng: number; approx?: boolean; approxNote?: string;
+};
 export const CENTRES: Centre[] = [
-  { id: "mandya", name: "Mandya", main: true, address: "GVFX+743 Medcloud building, Double concrete road, Ashok Nagar, Mandya, Karnataka 571401", map: "https://maps.app.goo.gl/pLwQ45ocVc3Sce5n9", x: 160, y: 234, lx: -12, ly: -14, anchor: "end" },
-  { id: "malavalli", name: "Malavalli", address: "Ground floor, Kullegowda Complex, in front of Government Hospital, Malavalli 571430", map: "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent("Medcloud Kullegowda Complex Malavalli 571430"), x: 224, y: 286, lx: 14, ly: 5, anchor: "start" },
-  { id: "kunigal", name: "Kunigal", address: "22F9+5PQ, Kunigal Town Rd, Kunigal, Karnataka 572130", map: "https://maps.app.goo.gl/PZEDwXdFaVNKTdX2A", x: 212, y: 34, lx: -14, ly: 5, anchor: "end" },
-  { id: "ramanagara", name: "Ramanagara", address: "Bangalore, Mysore Rd, Rayaradoddi, Karnataka 562159", map: "https://maps.app.goo.gl/w22putqujDA3DPGLA", x: 312, y: 154, lx: 14, ly: 18, anchor: "start" },
+  {
+    id: "mandya", name: "Mandya", main: true, lat: 12.5231435, lng: 76.8977764,
+    address: "GVFX+743 Medcloud building, Double Concrete Road, Ashok Nagar, Mandya, Karnataka 571401",
+    map: "https://maps.app.goo.gl/pLwQ45ocVc3Sce5n9",
+  },
+  {
+    id: "malavalli", name: "Malavalli", lat: 12.38487, lng: 77.05986, approx: true,
+    approxNote: "Pin shows the Government Hospital opposite the centre. The exact building is not yet verified.",
+    address: "Ground Floor, Kullegowda Complex, opposite Government Hospital, Malavalli, Karnataka 571430",
+    map: "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent("Medcloud, Kullegowda Complex, opposite Government Hospital, Malavalli, Karnataka 571430"),
+  },
+  {
+    id: "kunigal", name: "Kunigal", lat: 13.0229375, lng: 77.0193125,
+    address: "22F9+5PQ, Kunigal Town Road, Kunigal, Karnataka 572130",
+    map: "https://maps.app.goo.gl/PZEDwXdFaVNKTdX2A",
+  },
+  {
+    // TODO(verify): confirm the facility name on this directions listing before launch.
+    id: "ramanagara", name: "Ramanagara", lat: 12.7289423, lng: 77.2753684,
+    address: "Bangalore–Mysore Road, Rayaradoddi, Karnataka 562159",
+    map: "https://maps.app.goo.gl/w22putqujDA3DPGLA",
+  },
+];
+/** Shown on the map for orientation only. These are not Medcloud centres. */
+export const REFERENCE_CITIES = [
+  { name: "Bengaluru", lat: 12.9716, lng: 77.5946 },
+  { name: "Mysuru", lat: 12.2958, lng: 76.6394 },
 ];
 
 export const rupee = (n: number) => "₹" + n.toLocaleString("en-IN");
