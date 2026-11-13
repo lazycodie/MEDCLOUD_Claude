@@ -29,11 +29,11 @@ export function BookButton({ children, className = "btn btn-primary", preset }: 
   return <button className={className} onClick={() => open("book", preset)}>{children}</button>;
 }
 
-export function SlipButton({ className = "btn btn-ghost btn-sm slip-btn" }: { className?: string }) {
-  const { open, slip } = useSlip();
+export function SlipButton({ className = "btn btn-ghost btn-sm slip-btn", showTotal }: { className?: string; showTotal?: boolean }) {
+  const { open, slip, total } = useSlip();
   return (
     <button className={className} onClick={() => open("slip")}>
-      My tests <span className="count" data-n={slip.length}>{slip.length}</span>
+      My tests <span className="count" data-n={slip.length}>{slip.length}</span>{showTotal && total > 0 && <span className="mbar-total">₹{total.toLocaleString("en-IN")}</span>}
     </button>
   );
 }

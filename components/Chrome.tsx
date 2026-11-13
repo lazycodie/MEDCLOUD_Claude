@@ -27,7 +27,7 @@ export function Footer() {
         </ul></div>
       </div>
       <div className="wordmark" aria-hidden="true"><span>MEDCLOUD</span></div>
-      <div className="legal"><div className="wrap"><span>© {new Date().getFullYear()} Medcloud</span><span>Redesign concept. Prices as listed on medcloudlabs.com; confirm at booking.</span></div></div>
+      <div className="legal"><div className="wrap"><span>© {new Date().getFullYear()} Medcloud</span><span>Prices and availability are confirmed when you book.</span></div></div>
     </footer>
   );
 }
@@ -36,7 +36,7 @@ export function MobileBar() {
   return (
     <div className="mbar">
       <a className="btn btn-ghost" href={TEL}>Call</a>
-      <SlipButton className="btn btn-ghost" />
+      <SlipButton className="btn btn-ghost" showTotal />
       <BookButton>Book</BookButton>
     </div>
   );

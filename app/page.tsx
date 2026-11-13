@@ -7,7 +7,7 @@ import { Faq, Marquee } from "@/components/HomeSections";
 import { CountUp, Reveal } from "@/components/Motion";
 import Orb from "@/components/Orb";
 import { Cta, FoundersBig, PackageTeaser, PopularRows, SectionHead } from "@/components/Sections";
-import { DEPTS, PHONE_DISPLAY, SERVICES, TEL, TESTS, deptFrom, deptTests, rupee } from "@/lib/data";
+import { CENTRES, DEPTS, PHONE_DISPLAY, SERVICES, TEL, TESTS, deptFrom, deptTests, rupee } from "@/lib/data";
 
 // where the 3D cell sits in each full-screen section: "x,y,scale" in viewport units
 const STORY = [
@@ -20,8 +20,14 @@ const STORY = [
 const TOP_DEPTS = ["radiology", "biochemistry", "haematology", "serology", "hormone-assays"] as const;
 
 export default function Home() {
+  const ld = {
+    "@context": "https://schema.org", "@type": "MedicalBusiness", name: "Medcloud", url: "https://medcloudlabs.com/",
+    telephone: "+91-8150815026", email: "hello@medcloudlabs.com",
+    department: CENTRES.map((c) => ({ "@type": "DiagnosticLab", name: `Medcloud ${c.name}`, address: c.address, hasMap: c.map })),
+  };
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }} />
       <Orb />
 
       <section className="hero5" data-orb="0.5,0.02,1" data-shape="cell">
@@ -29,11 +35,11 @@ export default function Home() {
           <div className="hero5-copy">
             <p className="kicker">Welcome to Medcloud Diagnostics</p>
             <h1>
-              <span className="l"><span>We’ll ensure you</span></span>
-              <span className="l"><span>always get the</span></span>
-              <span className="l"><span><em>best result.</em></span></span>
+              <span className="l"><span>Specialist-led</span></span>
+              <span className="l"><span>diagnostics,</span></span>
+              <span className="l"><span><em>closer to home.</em></span></span>
             </h1>
-            <p className="lede">Advanced radiology and pathology with state of the art facilities. Find your test, see its price, and book in a minute.</p>
+            <p className="lede">Search {TESTS.length} tests and scans, see the price upfront, and book a centre visit or home collection in Mandya, Malavalli, Kunigal and Ramanagara.</p>
             <HeroSearch />
             <div className="hero-cta">
               <BookButton className="btn btn-primary" preset={{ mode: "home" }}>Book home collection</BookButton>

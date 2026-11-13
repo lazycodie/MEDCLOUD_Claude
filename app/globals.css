@@ -1,7 +1,7 @@
 /* Layout concept: the price list is the product. A navy hero holds one big test search; a paper
    "requisition slip" (mono prices, dashed rules) recurs as the price list, the cart and the booking summary. */
 :root{
-  --font-display:"Inter Tight"; --font-body:"Instrument Sans"; --font-mono:"IBM Plex Mono";
+  --font-display:"Manrope"; --font-body:"Inter"; --font-mono:"IBM Plex Mono";
   /* dark, cinematic theme: night-lab navy, emerald and blue glow, white paper slips for prices */
   color-scheme:dark;
   --ink:#f3f7ff; --ink-2:#b9c5df; --muted:#8492b3;

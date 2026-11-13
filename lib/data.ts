@@ -144,12 +144,101 @@ export function searchTests(query: string, pool: Item[] = TESTS): Item[] {
 export const testHref = (t: Item) => `/tests/${t.id}`;
 export const deptTests = (d: Dept) => TESTS.filter((t) => t.dept === d);
 export const deptFrom = (d: Dept) => Math.min(...deptTests(d).map((t) => t.price!));
+/** "Complete Blood Count(Cbc)" and "Complete Blood Count" are the same test listed twice on the source site. */
+export const nameKey = (s: string) => s.toLowerCase().replace(/\(.*?\)/g, "").replace(/[^a-z0-9]+/g, " ").trim();
 export function relatedTests(t: Item, n = 6): Item[] {
   const first = t.key.split(/[^a-z0-9]+/).filter((w) => w.length > 2)[0];
-  const same = TESTS.filter((x) => x.dept === t.dept && x.id !== t.id);
+  const seen = new Set([nameKey(t.key)]);
+  const same = TESTS.filter((x) => {
+    if (x.dept !== t.dept || x.id === t.id) return false;
+    const k = nameKey(x.key);
+    if (seen.has(k)) return false;
+    seen.add(k);
+    return true;
+  });
   const score = (x: Item) => (first && x.key.includes(first) ? 0 : 1) + (x.mod === t.mod ? 0 : 1);
   return [...same].sort((a, b) => score(a) - score(b) || Math.abs(a.price! - t.price!) - Math.abs(b.price! - t.price!)).slice(0, n);
 }
+
+/* ---------- per-test facts ----------
+   Written from general medical knowledge and the test's own name. Medcloud's clinical team
+   should review every line before launch; nothing here is lab-supplied. */
+const ABOUT: Record<string, string> = {
+  "haemoglobin": "Measures haemoglobin, the protein in red blood cells that carries oxygen. It is the usual check for anaemia.",
+  "haemglobin": "Measures haemoglobin, the protein in red blood cells that carries oxygen. It is the usual check for anaemia.",
+  "complete blood count": "Counts red cells, white cells and platelets and measures haemoglobin. A broad first check for anaemia, infection and other blood conditions.",
+  "complete haemogram": "A complete blood count with additional red-cell measurements, used to look into anaemia, infection and other blood conditions.",
+  "platelet count": "Measures the number of platelets in a small sample of blood. Platelets help blood to clot, so abnormal counts can point to bleeding or clotting disorders.",
+  "differential count": "Shows the share of each type of white blood cell, which helps indicate the kind of infection or inflammation present.",
+  "esr": "Measures how quickly red blood cells settle in a tube. It is a general marker of inflammation.",
+  "fasting blood sugar": "Measures blood glucose after an overnight fast. Used to screen for and monitor diabetes.",
+  "post prandial blood sugar": "Measures blood glucose about two hours after a meal. Used with the fasting test to monitor diabetes.",
+  "random blood sugar": "Measures blood glucose at any time of day, without fasting.",
+  "hba1c": "Reflects average blood glucose over roughly the past two to three months. Used to diagnose and monitor diabetes.",
+  "serum creatinine": "Measures creatinine, a waste product filtered by the kidneys. Used to assess kidney function.",
+  "blood urea": "Measures urea, a waste product cleared by the kidneys. Used with creatinine to assess kidney function.",
+  "renal function test": "A group of blood tests that together assess how well the kidneys are working.",
+  "liver function test": "A group of blood tests, including bilirubin, liver enzymes and proteins, that assess how the liver is working.",
+  "lipid profile test": "Measures total cholesterol, HDL, LDL and triglycerides to assess the risk of heart disease.",
+  "total cholesterol": "Measures the total amount of cholesterol in the blood.",
+  "triglycerides": "Measures triglycerides, a type of fat in the blood linked to heart-disease risk.",
+  "tsh": "Measures thyroid stimulating hormone. It is the usual first test of thyroid function.",
+  "thyroid profile": "Measures free T3, free T4 and TSH together to assess thyroid function.",
+  "ft3 tf4 tsh": "Measures free T3, free T4 and TSH together to assess thyroid function.",
+  "complete urine analysis": "Examines urine for sugar, protein, cells and other substances. Used to check for urinary infection, kidney problems and diabetes.",
+  "serum uric acid": "Measures uric acid in the blood. Raised levels are linked to gout.",
+  "vitamin b 12": "Measures the level of vitamin B12 in the blood.",
+  "vitamin d": "Measures 25-hydroxy vitamin D, the standard marker of vitamin D status.",
+  "blood group rh type": "Identifies your ABO blood group and Rh type.",
+  "widal": "A blood test used in the evaluation of typhoid fever.",
+  "dengue ns1 antigen rapid method": "Detects the dengue NS1 antigen, which can be found early in a dengue infection.",
+  "c reactive protein": "Measures CRP, a protein that rises with inflammation or infection.",
+  "hiv 1 2": "Screens for antibodies to HIV 1 and HIV 2.",
+  "ecg": "Records the electrical activity of the heart.",
+  "ct brain": "A CT scan that produces cross-sectional images of the brain.",
+  "h r c t chest": "A high-resolution CT scan that shows fine detail of the lungs.",
+  "mammogram": "X-ray imaging of the breast, used for screening and diagnosis.",
+};
+
+export type TestInfo = {
+  abbr: string | null; about: string | null; sample: string; prep: string; home: boolean; where: string;
+  packages: Pack[];
+};
+export function testInfo(t: Item): TestInfo {
+  const k = t.key, nk = nameKey(k);
+  const abbrM = t.name.match(/\(([A-Za-z0-9 ,/&+\-]{2,14})\)\s*$/);
+  const scan = t.dept === "radiology";
+  let sample = "Blood sample", home = true;
+  if (scan) { sample = "No sample needed"; home = false; }
+  else if (/tuberculin|skin test/.test(k)) { sample = "Skin test"; home = false; }
+  else if (/biopsy|fnac|pap smear|aspiration|prp/.test(k) || t.dept === "histopathology") { sample = "Tissue or cell specimen, collected by a doctor"; home = false; }
+  else if (/csf|ascitic|pleural|fluid/.test(k)) { sample = "Body fluid, collected by a doctor"; home = false; }
+  else if (/urine|upt/.test(k)) sample = "Urine sample";
+  else if (/stool/.test(k)) sample = "Stool sample";
+  else if (/sputum/.test(k)) sample = "Sputum sample";
+  else if (/semen/.test(k)) { sample = "Semen sample"; home = false; }
+  else if (/swab|pus/.test(k)) { sample = "Swab or pus sample"; home = false; }
+  const prep = /fasting/.test(k) ? "Fasting needed. Our team confirms the number of hours when you book."
+    : /post prandial/.test(k) ? "Taken about two hours after a meal."
+    : scan ? "Preparation depends on the scan. Our team tells you what to do when you book."
+    : "No special preparation is listed. Our team confirms when you book.";
+  return {
+    abbr: abbrM ? abbrM[1] : null,
+    about: ABOUT[nk] ?? null,
+    sample, prep, home,
+    where: scan ? "At a Medcloud centre. Call to check which centre offers this scan." : home ? "At home, or at any Medcloud centre." : "At a Medcloud centre.",
+    packages: PACKS.filter((p) => p.items.some((it) => PACK_ALIAS(it.name) === PACK_ALIAS(t.name))),
+  };
+}
+const ALIAS: Record<string, string> = { "complete blood picture": "complete blood count", "glucose fasting": "fasting blood sugar", "erythrocyte sedimentation rate": "esr", "creatinine": "serum creatinine", "complete urine examination": "complete urine analysis", "cholesterol total": "total cholesterol", "x ray chest": "x ray chest pa", "bilirubin total": "serum bilirubin", "aspartate aminotransferase": "asparate aminotransferase" };
+export function PACK_ALIAS(name: string) { const k = nameKey(name); return ALIAS[k] ?? k; }
+/** Packages in the list that already include this test. */
+export const coveredBy = (id: string, slip: string[]) => {
+  const t = ITEMS[id];
+  if (!t || t.dept === "package") return null;
+  const p = PACKS.find((p) => slip.includes(p.id) && p.items.some((it) => PACK_ALIAS(it.name) === PACK_ALIAS(t.name)));
+  return p ?? null;
+};
 
 /* ---------- services (copy from medcloudlabs.com) ---------- */
 export type Service = {
@@ -160,7 +249,7 @@ export const SERVICES: Service[] = [
   {
     slug: "home-collection", name: "Home sample collection", cta: "Request home collection",
     short: "Call us and we collect your sample at home in 30 minutes.",
-    intro: ["Home collection in 30 minutes. Call us now, or send your test list on WhatsApp, and skip the trip to the centre."],
+    intro: ["Home collection in 30 minutes. Call us now, or send your test list on WhatsApp, and skip the trip to the centre.", "The 30-minute pickup depends on your area and the time of day. Our team confirms the collection time when they call you back. Scans and some specimens are taken at a centre."],
     pills: ["30-minute pickup", "Blood & urine samples", "Call or WhatsApp"],
     parts: [
       { title: "Tell us the tests", body: "Add tests from the price list or read out your prescription on a call to +91 81508 15026." },
@@ -187,10 +276,11 @@ export const SERVICES: Service[] = [
     short: "3T MRI, MDCT and ultrasound, read by highly qualified and experienced radiologists.",
     intro: [
       "Dependable radiology services are crucial for ensuring precise diagnoses. With our facility, you can trust in the utilization of state-of-the-art technology, including 3T MRI, ultrasound, and MDCT, coupled with oversight from a team of highly qualified and experienced Radiologists.",
-      "This combination guarantees not only accurate results but also clinical relevance in the interpretations you receive. Medcloud runs the first fetal imaging center in Mandya to conduct fetal interventions.",
+      "Advanced imaging technology combined with experienced radiologists supports reliable diagnostic assessment. Medcloud runs the first fetal imaging center in Mandya to conduct fetal interventions.",
     ],
     pills: ["3T MRI", "CT scan", "Ultrasound", "X-Ray", "Fetal imaging"],
     parts: [
+      { title: "MRI (3T)", body: "Medcloud offers 3T MRI. Studies listed include MRI brain, dorsal and lumbar spine, knee, foot and a stroke protocol. Call us for MRI prices, preparation and the centre that offers your scan." },
       { title: "CT scan", body: "Our CT scan services utilize cutting-edge technology to produce detailed cross-sectional images of the body, aiding in the accurate diagnosis of various medical conditions. Swift and precise imaging lets our experienced radiologists provide valuable insights into your health." },
       { title: "X-Ray", body: "Our advanced imaging technology captures detailed images of internal structures, aiding in the prompt detection and evaluation of various health conditions. Led by skilled radiologists, our X-ray services provide a foundation for precise medical assessments." },
       { title: "Ultrasound", body: "Utilizing high-frequency sound waves, we create detailed images of internal structures, offering valuable insights for diagnostic purposes. Ultrasound is a reliable and non-invasive tool for assessing various medical conditions." },
@@ -221,7 +311,7 @@ export const WHY = [
 
 export const FAQS = [
   { q: "How do I book a test?", a: "Add tests from the price list to “My tests”, fill in your name and number, and send the request on WhatsApp. You can also call +91 81508 15026 and read out your prescription. Our team calls back to confirm." },
-  { q: "Do you collect samples at home?", a: "Yes. Call us for home collection in 30 minutes. Scans such as CT, MRI, ultrasound and X-ray are done at our centres." },
+  { q: "Do you collect samples at home?", a: "Yes. Call us for home collection in 30 minutes, subject to your area and the time of day; our team confirms the pickup time on call. Scans such as CT, MRI, ultrasound and X-ray are done at our centres." },
   { q: "How much do tests cost?", a: "Every test and scan is listed with its price on this site. Annual health packages start at ₹999*; call us for the current price of each package." },
   { q: "Where are your centres?", a: "Medcloud has four healthcare centres: Mandya, Malavalli, Kunigal and Ramanagara. Each centre page has the address and directions." },
   { q: "Which scans do you offer?", a: "CT (MDCT), 3T MRI, ultrasound, X-ray, mammography, ECG and echo. Medcloud also runs the first fetal imaging center in Mandya to conduct fetal interventions." },

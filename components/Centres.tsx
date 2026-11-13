@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { CENTRES, TEL } from "@/lib/data";
 import { BookButton } from "./Buttons";
 
@@ -41,6 +42,7 @@ export default function Centres() {
               <a className="btn btn-primary btn-sm" href={c.map} target="_blank" rel="noopener">Get directions</a>
               <a className="btn btn-ghost btn-sm" href={TEL}>Call</a>
               <BookButton className="btn btn-ghost btn-sm" preset={{ mode: "centre", centre: c.id }}>Book here</BookButton>
+              <Link className="btn btn-ghost btn-sm" href={`/centres/${c.id}`}>Details</Link>
             </div>
           </article>
         ))}
