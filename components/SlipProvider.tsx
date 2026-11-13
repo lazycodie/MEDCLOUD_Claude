@@ -3,7 +3,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { ITEMS } from "@/lib/data";
 
-export type DrawerView = "slip" | "book" | "done";
+export type DrawerView = "slip" | "book" | "done" | "sent";
 export type BookingPreset = { mode?: "home" | "centre"; centre?: string };
 type Toast = { msg: string; action?: { label: string; run: () => void } };
 

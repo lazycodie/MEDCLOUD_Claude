@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { CENTRES, DEPT_NAME, ITEMS, PHONE, PHONE_DISPLAY, TEL, rupee } from "@/lib/data";
+import { CENTRES, DEPT_NAME, ITEMS, PHONE, PHONE_DISPLAY, TEL, coveredBy, rupee } from "@/lib/data";
 import { useSlip } from "./SlipProvider";
 
 type Form = { name: string; phone: string; mode: "home" | "centre"; centre: string; address: string; date: string; slot: string; note: string };
@@ -17,9 +17,10 @@ function Requisition({ removable }: { removable?: boolean }) {
       <ul className="sl">
         {slip.map((id) => {
           const t = ITEMS[id];
+          const cov = coveredBy(id, slip);
           return (
             <li key={id}>
-              <div className="nm">{t.name}<small>{t.dept === "package" ? "Health package" : DEPT_NAME[t.dept]}</small></div>
+              <div className="nm">{t.name}<small>{t.dept === "package" ? "Health package" : DEPT_NAME[t.dept]}</small>{cov && <small className="overlap">Already included in {cov.name}</small>}</div>
               <span className="price">{t.price == null ? "On call" : rupee(t.price)}</span>
               {removable && <button className="rm" aria-label={`Remove ${t.name}`} onClick={() => remove(id)}>×</button>}
             </li>
@@ -77,12 +78,16 @@ export default function SlipDrawer() {
     return lines.join("\n");
   })();
 
-  const title = view === "book" ? "Book your tests" : view === "done" ? "Send your request" : "My tests";
+  const title = view === "book" ? "Your details" : view === "done" ? "Send your request" : view === "sent" ? "Request sent" : "My tests";
+  const stepNo = view === "slip" ? 1 : view === "book" ? 2 : 3;
 
   return (
     <dialog className="drawer" ref={ref} aria-labelledby="dr-title" onClose={close} onClick={(e) => { if (e.target === ref.current) close(); }}>
       <div className="dr">
         <div className="dr-head"><h2 id="dr-title">{title}</h2><button className="x" aria-label="Close" onClick={close}>×</button></div>
+        <ol className="bsteps" aria-label="Booking steps">
+          {["Tests", "Details", "Send"].map((s, i) => <li key={s} className={i + 1 === stepNo ? "on" : i + 1 < stepNo ? "done" : ""} aria-current={i + 1 === stepNo ? "step" : undefined}><span>{i + 1}</span>{s}</li>)}
+        </ol>
 
         {view === "slip" && (slip.length === 0 ? (
           <>
@@ -150,11 +155,32 @@ export default function SlipDrawer() {
                   <textarea className="field" id="b-note" rows={2} placeholder="Doctor’s name, tests on the prescription, fasting since…" value={form.note} onChange={(e) => set("note", e.target.value)} />
                 </div>
                 {slip.length ? <Requisition /> : <p className="fine" style={{ padding: 0 }}>No tests selected. Tell us the tests in the note above, or we’ll ask when we call.</p>}
+                <p className="privacy-note">This site does not store your details. They go to Medcloud only in the WhatsApp message you send in the next step.</p>
               </form>
             </div>
             <div className="dr-foot">
               <button className="btn btn-primary btn-block" id="review" onClick={review}>Review request</button>
               <button className="btn btn-ghost btn-block" onClick={() => open("slip")}>{slip.length ? "Edit my tests" : "Add tests"}</button>
+            </div>
+          </>
+        )}
+
+        {view === "sent" && (
+          <>
+            <div className="dr-body">
+              <div className="done sent-state" role="status">
+                <span className="tick-badge" aria-hidden="true">✓</span>
+                <h3>Request sent</h3>
+                <p>Your appointment is pending confirmation from Medcloud. Our team will call {form.phone.trim()} to confirm the time and any preparation.</p>
+                <p className="fine" style={{ padding: 0 }}>If WhatsApp did not open, or you did not press send there, go back and try again or call {PHONE_DISPLAY}.</p>
+              </div>
+            </div>
+            <div className="dr-foot">
+              <button className="btn btn-primary btn-block" onClick={close}>Done</button>
+              <div className="two">
+                <button className="btn btn-ghost" onClick={() => open("done")}>Back</button>
+                <a className="btn btn-ghost" href={TEL}>Call instead</a>
+              </div>
             </div>
           </>
         )}
@@ -166,10 +192,11 @@ export default function SlipDrawer() {
                 <h3>Almost done, {form.name.trim().split(" ")[0]}</h3>
                 <p>Send this request to Medcloud on WhatsApp. Our team calls you on {form.phone.trim()} to confirm the slot.</p>
                 <pre id="msg">{message}</pre>
+                <p className="privacy-note">Have a prescription? Attach a photo of it in WhatsApp after the chat opens.</p>
               </div>
             </div>
             <div className="dr-foot">
-              <a className="btn btn-primary btn-block" href={`https://wa.me/${PHONE}?text=${encodeURIComponent(message)}`} target="_blank" rel="noopener">Send on WhatsApp</a>
+              <a className="btn btn-primary btn-block" href={`https://wa.me/${PHONE}?text=${encodeURIComponent(message)}`} target="_blank" rel="noopener" onClick={() => setTimeout(() => open("sent"), 600)}>Open WhatsApp and send</a>
               <div className="two">
                 <a className="btn btn-ghost" href={TEL}>Call {PHONE_DISPLAY.slice(4)}</a>
                 <button className="btn btn-ghost" onClick={() => navigator.clipboard?.writeText(message).then(() => notify("Request copied"), () => notify("Select the text above to copy"))}>Copy request</button>
